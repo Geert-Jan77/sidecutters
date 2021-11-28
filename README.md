@@ -10,8 +10,8 @@ The software is licensed GPL/LGPL version 2. The Compiler is gcc, not Microsoft 
 If Windows operating system functionality is used, we import the operating system's dynamical linked library. Windows forms will not be used, we create our own forms instead. This project will have no dependencies.
 
 ## A table
-The user of the program will select components and edit the connections between them. This is done in a [table]. 
+The user of the program will select components and edit the connections between them. This is done in a **table** 
 He will press the *Generate* button with the *Side Cutter* icon and all the drawing's pages are generated automatically.
 
 ## I want this software!
-Then maybe you should help program it. Start by compiling the source on your pc. Read the ''doc'' folder on how to compile.
+Then maybe you should help program it. Start by compiling the source on your pc. Read the *doc* folder on how to compile.
