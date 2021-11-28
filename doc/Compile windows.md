@@ -29,9 +29,10 @@ Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times.
 ## Compile 
 
 1.  Open the command prompt and run the command ‘gcc -v’ to check if you have the compiler installed.
-2.  Find side cutters.c 
-3.  Run the commands
-		windres icon.rc -O coff -o icon.res  
-		windres info.rc -O coff -o info.res  
-		gcc "side cutters.c" icon.res info.res -o "side cutters.exe"
+2.  Download the zipped code from this project
+3.  Run the commands 
+	<code>gcc src/test/testpdf.c -o testpdf.exe</code>
+	<code>windres icon.rc -O coff -o icon.res</code>
+	<code>windres info.rc -O coff -o info.res</code>
+	<code>gcc "side cutters.c" icon.res info.res -o "side cutters.exe"</code>
  
