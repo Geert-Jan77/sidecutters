@@ -7,7 +7,7 @@ It should create electrical drawings automatically and export them as bookmarked
 
 ## How?
 The software is licensed GPL/LGPL version 2. The Compiler is gcc, not Microsoft Visual Studio and the project is written in C, not in C#. 
-If Windows operating system functionality is used, we import the operating system's dynamical linked library. Windows forms will not be used, we create our own forms instead. This poject will have no dependencies.
+If Windows operating system functionality is used, we import the operating system's dynamical linked library. Windows forms will not be used, we create our own forms instead. This project will have no dependencies.
 
 ## A table
 The user of the program will select components and edit the connections between them. This is done in a [table]. 
