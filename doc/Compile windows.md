@@ -26,13 +26,11 @@ hit [Advanced system properties]. This opens the Advanced tab of system properti
 Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times. 
 3.  Hit the [windows start button], Mouse over the [right arrow icon] right from [Shut down] till the tooltip pops up. Logoff and Logon again. 
 
-## Compile 
+## Compile and run tests
 
 1.  Open the command prompt and run the command ‘gcc -v’ to check if you have the compiler installed.
-2.  Download the zipped code from this project
-3.  Run the commands 
-	<code>gcc src/test/testpdf.c -o testpdf.exe</code>
-	<code>windres icon.rc -O coff -o icon.res</code>
-	<code>windres info.rc -O coff -o info.res</code>
-	<code>gcc "side cutters.c" icon.res info.res -o "side cutters.exe"</code>
+2.  Download the zipped code from this project, and unzip. Find the "sidecutters-main" folder
+3.  Run the command <code>compile.bat</code>
+4.  Run the command <code>testpdf.exe</code> This creates a bookmarked pdf to test the pdf-export functionality.
+5.  Run the command <code>"Side Cutters.exe"</code>
  
