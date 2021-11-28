@@ -29,7 +29,7 @@ Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times.
 ## Compile and run tests
 
 1.  Open the command prompt and run the command ‘gcc -v’ to check if you have the compiler installed.
-2.  Download the zipped code from this project, and unzip. Find the "sidecutters-main" folder
+2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, and unzip. Find the "sidecutters-main" folder
 3.  Run the command <code>compile.bat</code>
 4.  Run the command <code>testpdf.exe</code> This creates a bookmarked pdf to test the pdf-export functionality.
 5.  Run the command <code>"Side Cutters.exe"</code>
