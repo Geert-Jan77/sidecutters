@@ -5,13 +5,13 @@ How to compile on 64 bit Windows 7 or newer.
 
 ## Install MSYS
 
-1. Download the installer: msys2-x86_64-20210725.exe https://github.com/msys2/msys2-installer/releases/download/2021-07-25/msys2-x86_64-20210725.exe Verify with SHA256 checksum 7e055b71306e64192e2612f959f54ae99a5cf57186206ac702d113ef00ba35c0 or GPG signature by 0xf7a49b0ec. Use 7zip to verify the checksum.
+1. Download the installer: msys2-x86_64-20210725.exe https://github.com/msys2/msys2-installer/releases/download/2021-07-25/msys2-x86_64-20210725.exe Verify with SHA256 checksum 7e055b71306e64192e2612f959f54ae99a5cf57186206ac702d113ef00ba35c0. Use 7zip to verify the checksum.
 2. Run the installer. MSYS2 requires 64 bit Windows 7 or newer.
 3. Enter your desired Installation Folder (short ASCII-only path on a NTFS volume, no accents, no spaces, no symlinks, no subst or network drives, no FAT).
 4. When done, tick [Run MSYS2] now.
 5. Update the package database and base packages. Unless your setup file is very recent, it will take two steps. First run *pacman -Syu*
 6. Run *MSYS2 MSYS* from Start menu. If this opens *msys2_shell.cmd* file in your text editor, you should save the *msys2_shell.cmd* to *msys2_shell.bat* file. Right-Click *MSYS2 MSYS* from Start menu, and *Properties* from the context menu. Change the shortcut's target from *.cmd* to *.bat*
-7. Update the rest of the base packages with *pacman -Su*
+7. Update the rest of the base packages with *pacman -Su* if *D:\msys64\usr\bin\gpg-agent.exe* conflicts with your anti-virus software, create an exception for it. Verify the file has SHA256 checksum c5019c0957394776e5d42bfd3db266e4aab1541f82e1ab3feefe323319e0e369.
 
 ## Install MinGW
 
