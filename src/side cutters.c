@@ -12,20 +12,29 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "../rsc/resource.h"
 #include "generatebutton.c"
 #include "msgbox.c"
 #include "messages.c"
 
+BOOL bDebug = FALSE;
 const char g_szClassName[] = "myWindowClass";
 INT iRefreshButton;
 INT iHsize, iVsize, iBtn;
 INT iClientX, iClientY;
 
+void delay(int milli_seconds)
+{
+    clock_t start_time = clock();
+    while (clock() < start_time + milli_seconds);
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
-    switch(msg)
+    if (bDebug) message(msg, wParam, lParam, iClientX, iClientY);
+	switch(msg)
     {
         case WM_LBUTTONDOWN:
         {
@@ -38,6 +47,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (iBtn == 3) msgbox(583, 400, 514, 249, "rsc/clear.bmp");
         }
         break;
+		case WM_WINDOWPOSCHANGING:
+            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+        break;
+		case WM_WINDOWPOSCHANGED:
+            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+        break;
+		case WM_EXITMENULOOP:
+            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+        break;
+		case WM_GETICON:
+            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+        break;
+		case WM_SETFOCUS:
+            delay(300);
+			generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");
+        break;
+		case WM_NCMOUSEMOVE:
+		{
+			switch(wParam)
+			{
+				case 2:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 5:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 8:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 9:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 11:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 15:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 16:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 18:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 20:
+				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				default:
+			}
+		}
+		break;
         case WM_CLOSE:
             DestroyWindow(hWnd);
         break;
@@ -55,9 +115,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	iHsize = GetSystemMetrics(SM_CXSCREEN);
 	iVsize = GetSystemMetrics(SM_CYSCREEN);
 	printf("Screen Resolution w x h %d x %d \n", iHsize, iVsize);
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
-	//MoveWindow(GetConsoleWindow(), iHsize/2, 0, iHsize/2, iVsize - 80, TRUE);	
-    //ShowWindow(GetConsoleWindow(), SW_MINIMIZE);
+	if (!bDebug) ShowWindow(GetConsoleWindow(), SW_HIDE);
+	if (bDebug) MoveWindow(GetConsoleWindow(), iHsize/2, 0, iHsize/2, iVsize, TRUE);	
 	WNDCLASSEX wc;
     HWND hWnd;
     MSG Msg;
@@ -94,6 +153,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }	
+	if (bDebug) MoveWindow(hWnd, 0, 0, iHsize / 2, iVsize, TRUE);	
     ShowWindow(hWnd, nCmdShow || AW_ACTIVATE);
 	LPPOINT lpPoint;
 	lpPoint->x=0;
@@ -103,6 +163,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	iClientX = lpPoint->x;
 	iClientY = lpPoint->y;
 	printf("Client to screen: %d, %d\n", iClientX, iClientY); 
+	delay(400);
 	generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");
     while(GetMessage(&Msg, NULL, 0, 0) > 0)
     {
