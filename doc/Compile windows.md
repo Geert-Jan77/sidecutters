@@ -32,5 +32,5 @@ Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times.
 2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the "sidecutters-main" folder.
 3.  Run the command <code>compile.bat</code>
 4.  Run the command <code>testpdf.exe</code> This creates a bookmarked pdf to test the pdf-export functionality.
-5.  Run the command <code>"Side Cutters.exe"</code>
+5.  Run the command <code>"Side Cutters.exe"</code> This runs a minimal WinAPI application, our own forms will be created in there.
  
