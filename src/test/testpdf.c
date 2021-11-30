@@ -1,9 +1,14 @@
-/* 
-todo l.99  data_penguin_jpg
-     l.214 data_rgb
-compile 
-    gcc src/test/testpdf.c -o testpdf.exe
-*/ 
+/*
+-----------------------------------------------------------------------------------------
+ testpdf performs an export of a bookmarked printable data file. 
+ 
+ To compile:
+
+     gcc src/test/testpdf.c -o testpdf.exe
+	 
+-----------------------------------------------------------------------------------------
+*/
+ 
 #include "../pdf.h"
 #include "../pdf.c"
 int main(int argc, char *argv[]) {

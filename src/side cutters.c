@@ -1,47 +1,60 @@
-// compile 
+// compile: 
 // windres icon.rc -O coff -o icon.res  
 // windres info.rc -O coff -o info.res  
 // gcc "side cutters.c" icon.res info.res -o "side cutters.exe"
+// On my monitor, the size of A4 is 1054 x 748 pixel = 297,3 x 210,2 mm  
 
 #include <windows.h>
+#include <stdio.h>
 #include "../rsc/resource.h"
+#include "generatebutton.c"
+#include "msgbox.c"
+#include "messages.c"
 
 const char g_szClassName[] = "myWindowClass";
+INT iRefreshButton;
+INT iHsize, iVsize, iBtn;
+INT iClientX, iClientY;
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
     switch(msg)
     {
         case WM_LBUTTONDOWN:
         {
+			iBtn = message(msg, wParam, lParam, iClientX, iClientY);
             char szFileName[MAX_PATH];
             HINSTANCE hInstance = GetModuleHandle(NULL);
-
             GetModuleFileName(hInstance, szFileName, MAX_PATH);
-            MessageBox(hwnd, szFileName, "This program is:", MB_OK | MB_ICONINFORMATION);
+			if (iBtn == 1) msgbox(583, 400, 514, 249, "rsc/msgbox.bmp");
+			if (iBtn == 2) msgbox(583, 400, 514, 249, "rsc/clear.bmp");
+			if (iBtn == 3) msgbox(583, 400, 514, 249, "rsc/clear.bmp");
         }
         break;
         case WM_CLOSE:
-            DestroyWindow(hwnd);
+            DestroyWindow(hWnd);
         break;
         case WM_DESTROY:
             PostQuitMessage(0);
         break;
         default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
+            return DefWindowProc(hWnd, msg, wParam, lParam);
     }
     return 0;
 }
 
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
-	int iHsize = GetSystemMetrics(SM_CXSCREEN);
-	int iVsize = GetSystemMetrics(SM_CYSCREEN);
-    WNDCLASSEX wc;
-    HWND hwnd;
+	iHsize = GetSystemMetrics(SM_CXSCREEN);
+	iVsize = GetSystemMetrics(SM_CYSCREEN);
+	printf("Screen Resolution w x h %d x %d \n", iHsize, iVsize);
+	//ShowWindow(GetConsoleWindow(), SW_HIDE);
+	MoveWindow(GetConsoleWindow(), iHsize/2, 0, iHsize/2, iVsize - 80, TRUE);	
+    ShowWindow(GetConsoleWindow(), SW_MINIMIZE);
+	WNDCLASSEX wc;
+    HWND hWnd;
     MSG Msg;
 
     wc.cbSize        = sizeof(WNDCLASSEX);
@@ -65,7 +78,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
 
-    hwnd = CreateWindowEx(
+    hWnd = CreateWindowEx(
         WS_EX_CLIENTEDGE,
         g_szClassName,
         "Side Cutters",
@@ -73,19 +86,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         CW_USEDEFAULT, CW_USEDEFAULT, iHsize, iVsize,
         NULL, NULL, hInstance, NULL);
 
-    if(hwnd == NULL)
+    if(hWnd == NULL)
     {
         MessageBox(NULL, "Window Creation Failed!", "Error!",
             MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
-    ShowWindow(hwnd, nCmdShow);
-    UpdateWindow(hwnd);
+	//MoveWindow(hwnd, 0, 0, iHsize/2, iVsize, TRUE);	
+    ShowWindow(hWnd, nCmdShow);
+	//ShowWindow(hwnd, SW_HIDE);
+	LPPOINT lpPoint;
+	lpPoint->x=0;
+	lpPoint->y=0;
+    UpdateWindow(hWnd);
+	BOOL bRet = ClientToScreen(hWnd, lpPoint);
+	iClientX = lpPoint->x;
+	iClientY = lpPoint->y;
+	printf("Client to screen: %d, %d\n", iClientX, iClientY); 
+	generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");
+
 
     while(GetMessage(&Msg, NULL, 0, 0) > 0)
     {
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
     }
+	
     return Msg.wParam;
 }
