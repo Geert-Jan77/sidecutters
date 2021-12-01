@@ -13,86 +13,95 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "../rsc/resource.h"
 #include "generatebutton.c"
 #include "msgbox.c"
 #include "messages.c"
 
 BOOL bDebug = FALSE;
-const char g_szClassName[] = "myWindowClass";
-INT iRefreshButton;
+const char g_szClassName[] = "Side Cutters";
 INT iHsize, iVsize, iBtn;
-INT iClientX, iClientY;
+RECT rect2;
 
 void delay(int milli_seconds)
 {
-    clock_t start_time = clock();
-    while (clock() < start_time + milli_seconds);
+	unsigned long long cycles = (unsigned long long) milli_seconds * 3375000; //3,37 GHz
+	unsigned long long start_time = _rdtsc();
+    while (_rdtsc() < start_time + cycles);
+	printf("Waited %d Mcycles\n", cycles / 1000000 );
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (bDebug) message(msg, wParam, lParam, iClientX, iClientY);
+	if (bDebug) message(msg, wParam, lParam);
+	if (lParam==33554432) 
+	{
+		delay(200);
+		generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+	}
 	switch(msg)
     {
         case WM_LBUTTONDOWN:
         {
-			iBtn = message(msg, wParam, lParam, iClientX, iClientY);
+			iBtn = message(msg, wParam, lParam);
             char szFileName[MAX_PATH];
             HINSTANCE hInstance = GetModuleHandle(NULL);
             GetModuleFileName(hInstance, szFileName, MAX_PATH);
-			if (iBtn == 1) msgbox(583, 400, 514, 249, "rsc/msgbox.bmp");
-			if (iBtn == 2) msgbox(583, 400, 514, 249, "rsc/clear.bmp");
-			if (iBtn == 3) msgbox(583, 400, 514, 249, "rsc/clear.bmp");
+			if (iBtn == 1) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/msgbox.bmp");
+			if (iBtn == 2) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
+			if (iBtn == 3) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
         }
         break;
-		case WM_WINDOWPOSCHANGING:
-            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
-        break;
-		case WM_WINDOWPOSCHANGED:
-            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
-        break;
 		case WM_EXITMENULOOP:
-            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
-        break;
-		case WM_GETICON:
-            generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+            generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
         break;
 		case WM_SETFOCUS:
             delay(300);
-			generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");
+			generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
         break;
+		case WM_MOUSEMOVE:
+		{
+			POINT point;
+			if (GetCursorPos(&point)) 
+			{
+				// draw label
+				// printf("Cursor: %d, %d\n", point.x, point.y);
+			}
+		}
+		break;
 		case WM_NCMOUSEMOVE:
 		{
 			switch(wParam)
 			{
 				case 2:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 5:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 8:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 9:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+				break;
+				case 10:
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 11:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 15:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 16:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 18:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				case 20:
-				generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");  
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				break;
 				default:
 			}
@@ -106,17 +115,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
         default:
             return DefWindowProc(hWnd, msg, wParam, lParam);
-    }
+	}
     return 0;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	BOOL bRet;
+	LPPOINT lp1,lp2;
 	iHsize = GetSystemMetrics(SM_CXSCREEN);
 	iVsize = GetSystemMetrics(SM_CYSCREEN);
 	printf("Screen Resolution w x h %d x %d \n", iHsize, iVsize);
 	if (!bDebug) ShowWindow(GetConsoleWindow(), SW_HIDE);
-	if (bDebug) MoveWindow(GetConsoleWindow(), iHsize/2, 0, iHsize/2, iVsize, TRUE);	
+	if (bDebug) MoveWindow(GetConsoleWindow(), iHsize/2, 0, iHsize/2 - 6, iVsize - 50, TRUE);	
 	WNDCLASSEX wc;
     HWND hWnd;
     MSG Msg;
@@ -139,32 +150,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
-    hWnd = CreateWindowEx(
-        WS_EX_CLIENTEDGE,
-        g_szClassName,
-        "Side Cutters",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, iHsize, iVsize,
-        NULL, NULL, hInstance, NULL);
-
+    hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, g_szClassName, "Side Cutters", 
+	(WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX ), 
+	CW_USEDEFAULT, CW_USEDEFAULT, iHsize, iVsize, NULL, NULL, hInstance, NULL); // WS_MAXIMIZEBOX, WS_THICKFRAME , WS_DISABLED
     if(hWnd == NULL)
     {
-        MessageBox(NULL, "Window Creation Failed!", "Error!",
-            MB_ICONEXCLAMATION | MB_OK);
+        MessageBox(NULL, "Window Creation Failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }	
-	if (bDebug) MoveWindow(hWnd, 0, 0, iHsize / 2, iVsize, TRUE);	
     ShowWindow(hWnd, nCmdShow || AW_ACTIVATE);
-	LPPOINT lpPoint;
-	lpPoint->x=0;
-	lpPoint->y=0;
-    UpdateWindow(hWnd);
-	BOOL bRet = ClientToScreen(hWnd, lpPoint);
-	iClientX = lpPoint->x;
-	iClientY = lpPoint->y;
+	UpdateWindow(hWnd);
+	lp1->x=0;
+	lp1->y=0;
+	bRet = ClientToScreen(hWnd, lp1);
+	iClientX = lp1->x;
+	iClientY = lp1->y;
 	printf("Client to screen: %d, %d\n", iClientX, iClientY); 
-	delay(400);
-	generatebutton(100, 100, 100, 100, "rsc/side cutters a.bmp");
+	RECT rect, rect1;
+    HWND taskBar = FindWindow("Shell_traywnd", NULL);
+    if(taskBar && GetWindowRect(taskBar, &rect)) {
+		printf("Desktop: left 0, right %d, top 0, bottom %d\n", iHsize, iVsize);
+        printf("Taskbar: left %d, right %d, top %d, bottom %d\n", rect.left, rect.right, rect.top, rect.bottom);
+		if (rect.right != iHsize) rect1.left = rect.right; else rect1.left = 0;
+		if (rect.left != 0) rect1.right = rect.left; else rect1.right = iHsize;
+		if (rect.bottom != iVsize) rect1.top = rect.bottom; else rect1.top = 0;
+		if (rect.top != 0) rect1.bottom = rect.top; else rect1.bottom = iVsize;
+		printf("Max size: left %d, right %d, top %d, bottom %d\n", rect1.left, rect1.right, rect1.top, rect1.bottom);
+		rect2.left = rect1.left + 6;
+		rect2.top = rect1.top + 6;
+		rect2.right = rect1.right - 6;
+		rect2.bottom = rect1.bottom - 6;
+		printf("Side Cutters: left %d, right %d, top %d, bottom %d\n", rect2.left, rect2.right, rect2.top, rect2.bottom);
+	}
+	if (bDebug) MoveWindow(hWnd, rect2.left, rect2.top, rect2.right / 2 - rect2.left, rect2.bottom - rect2.top, TRUE);	
+	if (!(bDebug)) MoveWindow(hWnd, rect2.left, rect2.top, rect2.right - rect2.left, rect2.bottom - rect2.top, TRUE);
+	UpdateWindow(hWnd);
+	lp1->x=0;
+	lp1->y=0;
+	bRet = ClientToScreen(hWnd, lp1);
+	iClientX = lp1->x;
+	iClientY = lp1->y;
+	printf("Client to screen: %d, %d\n", iClientX, iClientY); 
+	delay(200);
+	generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
     while(GetMessage(&Msg, NULL, 0, 0) > 0)
     {
         TranslateMessage(&Msg);

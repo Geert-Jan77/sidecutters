@@ -2,6 +2,7 @@
 #define MAX_STRING_SIZE 40
 
 BOOL bFound;
+INT iClientX, iClientY;
 
 char sMsg[NUMBER_OF_STRING][MAX_STRING_SIZE] = {  
 		"0000",	 "0",	 "WM_NULL",	
@@ -1018,7 +1019,7 @@ char * Messages(UINT iIn1)
 	return sOut;
 }
 
-int message(UINT msg, WPARAM wParam, LPARAM lParam, INT iClientX, INT iClientY)
+int message(UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	UINT iIn2;
 	for (int k = 0; k < NUMBER_OF_STRING; k++)
@@ -1030,12 +1031,12 @@ int message(UINT msg, WPARAM wParam, LPARAM lParam, INT iClientX, INT iClientY)
 			{
 				int iX = (int) lParam % (256 * 256);
 				int iY = (int) lParam / (256 * 256);
-				printf("%d %s %d %d iX = %d iY = %d \n",  msg, sMsg[k + 1], wParam, lParam, iX, iY);
-				printf("X = %d Y = %d \n", iX + iClientX, iY + iClientY);
+				printf("%d %s %d %d relX = %d relY = %d \n",  msg, sMsg[k + 1], wParam, lParam, iX, iY);
+				printf("absX = %d absY = %d \n", iX + iClientX, iY + iClientY);
 				// button 1 clicked? 50, 150, 100, 100
-				if ((iX + iClientX < 200) && (iX + iClientX > 100) && (iY + iClientY < 200) && (iY + iClientY > 100)) return 1; // Generate
-				if ((iX + iClientX < 1062) && (iX + iClientX > 962) && (iY + iClientY < 605) && (iY + iClientY > 572)) return 2; // Ok
-				if ((iX + iClientX < 1070) && (iX + iClientX > 1012) && (iY + iClientY < 436) && (iY + iClientY > 413)) return 3; // Close
+				if ((iX < 200) && (iX > 100) && (iY < 200) && (iY > 100)) return 1; // Generate
+				if ((iX < 1062) && (iX > 962) && (iY < 507) && (iY > 472)) return 2; // Ok
+				if ((iX < 1070) && (iX > 1012) && (iY < 338) && (iY > 313)) return 3; // Close
 			} 
 			else	
 			{
@@ -1046,3 +1047,14 @@ int message(UINT msg, WPARAM wParam, LPARAM lParam, INT iClientX, INT iClientY)
 	return 0;
 }	
 	
+int clientchange(HWND hWnd)
+{
+	UpdateWindow(hWnd);
+	LPPOINT lpPoint;
+	BOOL bRet;
+	lpPoint->x=0;
+	lpPoint->y=0;
+	bRet = ClientToScreen(hWnd, lpPoint);
+	iClientX = lpPoint->x;
+	iClientY = lpPoint->y; 
+}
