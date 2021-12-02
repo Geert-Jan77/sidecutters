@@ -40,83 +40,162 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	INT length;
 	CHAR sStr1[50],sStr2[50],sStr3[50];
 	if (bDebug) message(msg, wParam, lParam);
-	if (lParam==33554432) 
 	{
-		delay(200);
-		generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+		if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms, 3.37GHz
+		{
+			if (lParam==33554432) 
+			{
+				delay(200);
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+				label(120 + iClientX, 205 + iClientY, "Generate");
+				remember_time = _rdtsc();
+			}
+		}
 	}
 	switch(msg)
     {
         case WM_LBUTTONDOWN:
         {
-			iBtn = message(msg, wParam, lParam);
-            char szFileName[MAX_PATH];
-            HINSTANCE hInstance = GetModuleHandle(NULL);
-            GetModuleFileName(hInstance, szFileName, MAX_PATH);
-			if (iBtn == 1) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/msgbox.bmp");
-			if (iBtn == 2) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
-			if (iBtn == 3) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
-        }
-        break;
-		case WM_EXITMENULOOP:
-            generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-        break;
-		case WM_SETFOCUS:
-            delay(300);
-			generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
-        break;
-		case WM_MOUSEMOVE:
-		{
-			if ((_rdtsc()-remember_time) > (50 * 3375000)) //50 ms
+			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
 			{
-			if (GetCursorPos(&point)) 
-			{
-				length = snprintf( NULL, 0, "Cursor: %d, %d  ", point.x, point.y );
-				str = malloc( length + 1 );
-				snprintf( str, length + 1, "Cursor: %d, %d  ", point.x, point.y );
-				printf("%s\n", str);
-				label(120 + iClientX, 300 + iClientY, str);
-				free(str);
+				iBtn = message(msg, wParam, lParam);
+				char szFileName[MAX_PATH];
+				HINSTANCE hInstance = GetModuleHandle(NULL);
+				GetModuleFileName(hInstance, szFileName, MAX_PATH);
+				if (iBtn == 1) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/msgbox.bmp");
+				if (iBtn == 2) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
+				if (iBtn == 3) msgbox(583 + iClientX, 300 + iClientY, 514, 249, "rsc/clear.bmp");
 				remember_time = _rdtsc();
 			}
+		}
+        break;
+		case WM_EXITMENULOOP:
+		{
+			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			{	
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+				label(120 + iClientX, 205 + iClientY, "Generate");
+				remember_time = _rdtsc();
+			}
+		}
+		break;
+		case WM_SETFOCUS:
+		{
+			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			{
+				delay(300);
+				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+				label(120 + iClientX, 205 + iClientY, "Generate");
+				remember_time = _rdtsc();
+			}
+		}
+		break;
+		case WM_MOUSEMOVE:
+		{
+			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			{
+				if (GetCursorPos(&point)) 
+				{
+					length = snprintf( NULL, 0, "Cursor: %d, %d   ", point.x, point.y );
+					str = malloc( length + 1 );
+					snprintf( str, length + 1, "Cursor: %d, %d   ", point.x, point.y );
+					printf("%s\n", str);
+					label(120 + iClientX, 300 + iClientY, str);
+					free(str);
+					remember_time = _rdtsc();
+				}
 			}
 		}
 		break;
 		case WM_NCMOUSEMOVE:
 		{
-			switch(wParam)
+			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
 			{
-				case 2:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 5:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 8:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 9:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 10:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 11:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 15:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 16:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 18:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				case 20:
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
-				break;
-				default:
+				if (GetCursorPos(&point)) 
+				{
+					length = snprintf( NULL, 0, "Cursor: %d, %d   ", point.x, point.y );
+					str = malloc( length + 1 );
+					snprintf( str, length + 1, "Cursor: %d, %d   ", point.x, point.y );
+					printf("%s\n", str);
+					label(120 + iClientX, 300 + iClientY, str);
+					free(str);
+					remember_time = _rdtsc();
+				}
+			
+				switch(wParam)
+				{
+					case 2:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 5:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 8:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 9:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 10:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 11:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 15:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 16:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 18:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					case 20:
+					{
+						generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
+						label(120 + iClientX, 205 + iClientY, "Generate");
+						remember_time = _rdtsc();
+					}
+					break;
+					default:
+				}
 			}
 		}
 		break;
@@ -196,7 +275,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		printf("Side Cutters: left %d, right %d, top %d, bottom %d\n", rect2.left, rect2.right, rect2.top, rect2.bottom);
 	}
 	if (bDebug) MoveWindow(hWnd, rect2.left, rect2.top, rect2.right / 2 - rect2.left, rect2.bottom - rect2.top, TRUE);	
-	if (!(bDebug)) MoveWindow(hWnd, rect2.left, rect2.top, rect2.right - rect2.left, rect2.bottom - rect2.top, TRUE);
+	if (!(bDebug)) MoveWindow(hWnd, rect1.left, rect1.top, rect1.right - rect1.left, rect1.bottom - rect1.top, TRUE);
 	UpdateWindow(hWnd);
 	lp1->x=0;
 	lp1->y=0;
