@@ -17,11 +17,13 @@
 #include "generatebutton.c"
 #include "msgbox.c"
 #include "messages.c"
+#include "label.c"
 
 BOOL bDebug = FALSE;
 const char g_szClassName[] = "Side Cutters";
 INT iHsize, iVsize, iBtn;
 RECT rect2;
+unsigned long long remember_time;
 
 void delay(int milli_seconds)
 {
@@ -33,6 +35,10 @@ void delay(int milli_seconds)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	POINT point;
+	char* str;
+	INT length;
+	CHAR sStr1[50],sStr2[50],sStr3[50];
 	if (bDebug) message(msg, wParam, lParam);
 	if (lParam==33554432) 
 	{
@@ -61,11 +67,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 		case WM_MOUSEMOVE:
 		{
-			POINT point;
+			if ((_rdtsc()-remember_time) > (50 * 3375000)) //50 ms
+			{
 			if (GetCursorPos(&point)) 
 			{
-				// draw label
-				// printf("Cursor: %d, %d\n", point.x, point.y);
+				length = snprintf( NULL, 0, "Cursor: %d, %d  ", point.x, point.y );
+				str = malloc( length + 1 );
+				snprintf( str, length + 1, "Cursor: %d, %d  ", point.x, point.y );
+				printf("%s\n", str);
+				label(120 + iClientX, 300 + iClientY, str);
+				free(str);
+				remember_time = _rdtsc();
+			}
 			}
 		}
 		break;
@@ -193,6 +206,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	printf("Client to screen: %d, %d\n", iClientX, iClientY); 
 	delay(200);
 	generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+	label(120 + iClientX, 205 + iClientY, "Generate");
     while(GetMessage(&Msg, NULL, 0, 0) > 0)
     {
         TranslateMessage(&Msg);
