@@ -9,7 +9,7 @@
 	Include path starts from ./src where the code is, 
 	Resource path starts from . where the executable is.
 */
-
+#define CYCLES_REFRESH 33750000 //10 ms 3,375 GHz
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,7 @@ unsigned long long remember_time;
 
 void delay(int milli_seconds)
 {
-	unsigned long long cycles = (unsigned long long) milli_seconds * 3375000; //3,37 GHz
+	unsigned long long cycles = (unsigned long long) milli_seconds * 3375000; 
 	unsigned long long start_time = _rdtsc();
     while (_rdtsc() < start_time + cycles);
 	printf("Waited %d Mcycles\n", cycles / 1000000 );
@@ -39,24 +39,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	char* str;
 	INT length;
 	CHAR sStr1[50],sStr2[50],sStr3[50];
-	if (bDebug) message(msg, wParam, lParam);
+	if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 	{
-		if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms, 3.37GHz
+		if (bDebug) message(msg, wParam, lParam);
+		if (lParam==33554432) 
 		{
-			if (lParam==33554432) 
-			{
-				delay(200);
-				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
-				label(120 + iClientX, 205 + iClientY, "Generate");
-				remember_time = _rdtsc();
-			}
+			delay(200);
+			generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
+			label(120 + iClientX, 205 + iClientY, "Generate");
+			remember_time = _rdtsc();
 		}
 	}
+	
 	switch(msg)
     {
         case WM_LBUTTONDOWN:
         {
-			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 			{
 				iBtn = message(msg, wParam, lParam);
 				char szFileName[MAX_PATH];
@@ -71,7 +70,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 		case WM_EXITMENULOOP:
 		{
-			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 			{	
 				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");  
 				label(120 + iClientX, 205 + iClientY, "Generate");
@@ -81,7 +80,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_SETFOCUS:
 		{
-			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 			{
 				delay(300);
 				generatebutton(100 + iClientX, 100 + iClientY, 100, 100, "rsc/side cutters a.bmp");
@@ -92,7 +91,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_MOUSEMOVE:
 		{
-			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 			{
 				if (GetCursorPos(&point)) 
 				{
@@ -109,7 +108,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 		case WM_NCMOUSEMOVE:
 		{
-			if ((_rdtsc()-remember_time) > (90 * 3375000)) //70 ms
+			if ((_rdtsc()-remember_time) > CYCLES_REFRESH) 
 			{
 				if (GetCursorPos(&point)) 
 				{

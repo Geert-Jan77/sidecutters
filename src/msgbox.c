@@ -1,21 +1,3 @@
-/*
-
- directories used: C:/Windows/System32/
- TODO:  user32.TrackMouseEvent redraws the rectangle, rounded buttons, etc.
------------------------------------------------------------------------------------------
- testbutton performs a display test using the graphics card. 
- Paint a bitmap file on the monitor with BitBlt.
- 
- To compile and run:
-
-     gcc testbutton.c -o testbutton.exe
-	 
- Run:
-	 
-	 testbmp [iLeft=0], [iRight=508], [iTop=0], [iBottom=495]
-	 
------------------------------------------------------------------------------------------
-*/
 #include <Windows.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +9,8 @@ int msgbox(int iLeft, int iTop, int	iWidth, int iHeight, char * sName)
 	CreateRectRgn, DeleteObject, CreateBitmap, CreatePatternBrush, GetObject, BitBlt, 
 	CreateCompatibleDC, SelectObject, DeleteDC;
 	HDC hDC1,hDC2;
-	HBITMAP hBmp;
-	hBmp = (HBITMAP)LoadImage(NULL, sName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	INT_PTR hDesk;
+	INT_PTR hOrig, hBmp;
     //printf("testbutton [iLeft=%d], [iBottom=%d], [iWidth=%d], [iHeight=%d] \n", iLeft, iBottom, iWidth, iHeight);		
     if ((libHandle = LoadLibrary(TEXT("C:/Windows/System32/user32.dll"))) == NULL) { return 1; }
     if ((GetDesktopWindow = GetProcAddress(libHandle, "GetDesktopWindow")) == NULL){ return 1;}
@@ -44,12 +26,30 @@ int msgbox(int iLeft, int iTop, int	iWidth, int iHeight, char * sName)
 	if ((BitBlt = GetProcAddress(libHandle, "BitBlt")) == NULL) { printf("Error BitBlt\n"); return 1; }
 	if ((CreateCompatibleDC = GetProcAddress(libHandle, "CreateCompatibleDC")) == NULL) { printf("Error CreateCompatibleDC\n"); return 1; }
 	if ((SelectObject = GetProcAddress(libHandle, "SelectObject")) == NULL) { printf("Error SelectObject\n"); return 1; }
-    if ((DeleteDC = GetProcAddress(libHandle, "DeleteDC")) == NULL) { printf("Error DeleteDC\n"); return 1; }
-	hDC2 = (HDC)GetWindowDC(GetDesktopWindow());
-	hDC1 = (HDC)CreateCompatibleDC(hDC2);
-	INT_PTR hOrig = SelectObject(hDC1, (INT_PTR)hBmp);
-	BitBlt(hDC2, iLeft, iTop, iWidth, iHeight, hDC1, 0, 0, SRCCOPY);
-	DeleteDC(hDC1);
+    if ((DeleteDC = GetProcAddress(libHandle, "DeleteDC")) == NULL) { printf("Error DeleteDC\n"); return 1; }		
+	
+	hBmp = (INT_PTR)LoadImage(NULL, sName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	if (hBmp != (INT_PTR)NULL)
+	{
+		hDesk = GetDesktopWindow();
+		if (hDesk != (INT_PTR)NULL)
+		{
+			hDC2 = (HDC)GetWindowDC(hDesk);
+			if (hDC2 != NULL)
+			{
+				hDC1 = (HDC)CreateCompatibleDC(hDC2);
+				if (hDC1 != NULL)
+				{
+					hOrig = SelectObject(hDC1, hBmp);
+					BitBlt(hDC2, iLeft, iTop, iWidth, iHeight, hDC1, 0, 0, SRCCOPY);
+					SelectObject(hDC2, hOrig);
+					DeleteObject(hBmp);					
+					DeleteDC(hDC1);
+				}
+				ReleaseDC((HWND)hDesk, hDC2);
+			}
+		}
+	}
 	return 0;
 }
 	

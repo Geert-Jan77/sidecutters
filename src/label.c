@@ -10,19 +10,15 @@ int label(int iLeft, int iTop, char * sName)
 	FARPROC GetDesktopWindow, GetWindowDC, GetDC, CreateSolidBrush, FillRgn, 
 	CreateRectRgn, DeleteObject, CreateBitmap, CreatePatternBrush, GetObject, BitBlt, 
 	CreateCompatibleDC, SelectObject, DeleteDC;
-	INT_PTR hBrush, hRect;
-	CHAR sFile1[50], sFile2[50], sFile3[50];
-	CHAR cHr;
-	INT length;
-	char* str;
-	BOOL bRet;
+	INT_PTR hBrush, hRect, hBmp, hDesk, hOrig;
 	HDC hDC1, hDC2;
-	HBITMAP hBmp;
 	BITMAPINFOHEAD bitmapInfoHeader;
 	unsigned char *bitmapData;
-	INT iWidth;
-	INT iHeight;
-	INT_PTR hOrig;
+	CHAR sFile1[50], sFile2[50], sFile3[50];
+	CHAR cHr;
+	INT length, iWidth, iHeight;
+	char* str;
+	BOOL bRet;
     if ((libHandle = LoadLibrary(TEXT("C:/Windows/System32/user32.dll"))) == NULL) { return 1; }
     if ((GetDesktopWindow = GetProcAddress(libHandle, "GetDesktopWindow")) == NULL){ return 1;}
 	if ((GetWindowDC = GetProcAddress(libHandle, "GetWindowDC")) == NULL) { return 1;}
@@ -56,18 +52,35 @@ int label(int iLeft, int iTop, char * sName)
 		strcpy(sFile3, ".bmp");
 		strcat(sFile1, sFile3);
 		//printf("The filename is %s\n", sFile1);
-		hBmp = (HBITMAP)LoadImage(NULL, sFile1, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-		bitmapData = LoadBitmapFle(sFile1,&bitmapInfoHeader);
-		iWidth = bitmapInfoHeader.biWidth;
-		iHeight = bitmapInfoHeader.biHeight;
-		//printf("Width x height  %d x %d\n", iWidth, iHeight);
-		hDC2 = (HDC)GetWindowDC(GetDesktopWindow());
-		hDC1 = (HDC)CreateCompatibleDC(hDC2);
-		hOrig = SelectObject(hDC1, (INT_PTR)hBmp);
-		BitBlt(hDC2, iLeft, iTop, iWidth, iHeight, hDC1, 0, 0, SRCCOPY);
-		iLeft = iLeft + iWidth - 1;
+		hBmp = (INT_PTR)LoadImage(NULL, sFile1, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		if (hBmp != (INT_PTR)NULL)
+		{
+			bitmapData = LoadBitmapFle(sFile1,&bitmapInfoHeader);
+			// The bmp is loaded for the second time here.
+			iWidth = bitmapInfoHeader.biWidth;
+			iHeight = bitmapInfoHeader.biHeight;
+			//printf("Width x height  %d x %d\n", iWidth, iHeight);
+			hDesk = GetDesktopWindow();
+			if (hDesk != (INT_PTR)NULL)
+			{
+				hDC2 = (HDC)GetWindowDC(hDesk);
+				if (hDC2 != NULL)
+				{
+					hDC1 = (HDC)CreateCompatibleDC(hDC2);
+					if (hDC1 != NULL)
+					{
+						hOrig = SelectObject(hDC1, hBmp);
+						BitBlt(hDC2, iLeft, iTop, iWidth, iHeight, hDC1, 0, 0, SRCCOPY);
+						iLeft = iLeft + iWidth - 1;
+						SelectObject(hDC2, hOrig);
+						DeleteObject(hBmp);					
+						DeleteDC(hDC1);
+					}
+				ReleaseDC((HWND)hDesk, hDC2);
+				}
+			}
+		}
 	}
 	printf("Label right %d pix\n", iLeft);
-	DeleteDC(hDC1);
 	return 0;
 }
