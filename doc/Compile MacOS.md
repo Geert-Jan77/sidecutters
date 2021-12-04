@@ -1,3 +1,3 @@
 
-*Install xcode command line tools
+#Install xcode command line tools
 
