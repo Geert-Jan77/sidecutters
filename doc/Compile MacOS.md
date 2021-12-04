@@ -23,7 +23,7 @@ Also get the command line tools.
 
 ### Optional
 
-Apple does not include the actual GNU C/C++ compiler in the command-line tool for Xcode, or Xcode itself. The **gcc** "compatibility" command is a special build of clang/clang++ that is using older gcc compatibility.
+Apple does not include the actual GNU C/C++ compiler in the command-line tool for Xcode. The **gcc** "compatibility" command is a special build of clang/clang++ that is using older gcc compatibility.
 To get the real GNU C/C++ package (and its libraries) installed into the /usr/local tree:
 
         Install Homebrew package manager
