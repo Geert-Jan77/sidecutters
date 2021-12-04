@@ -3,7 +3,23 @@
 
 How to compile on MacOS
 
-## Install xcode command line tools
+## Install Xcode Command Line Tools
+
+In MacOS, GCC is part of Xcode's command tools. Xcode requires MacOS 10.12.6 or later. First, open the Mac App Store and install Xcode for free.
+Then, open Xcode, go to Xcode menu (on the menu bar) > Preferences > Downloads, and install Command Line Tools.
+
+### Earlier MacOS versions than 10.12.6
+
+Whenever you go to download Xcode from the App Store, it tells you "Xcode can’t be installed on “Macintosh HD” because MacOS version 10.12.6 or later is required". There is another way of installing a GCC compiler.
+
+1. Sign up for a "Free" Developer account
+<https://developer.apple.com/register/index.action>
+
+2. Then go to
+<https://developer.apple.com/download/more>
+and get a version of Xcode that works on your system. Xcode 4.2 may work, if not, get an older version.
+
+Also get the command line tools.
 
 ## Compile and run tests
 
