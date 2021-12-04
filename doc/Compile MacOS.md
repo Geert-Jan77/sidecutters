@@ -11,7 +11,7 @@ How to compile on MacOS
 2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the "sidecutters-main" folder.
 3.  Run the command <code>chmod +x compile.sh</code>
 4.  <code>./compile.sh</code>
-5.  <code>chmod +x "side Cutters.app"</code>
+5.  <code>chmod +x "Side Cutters.app"</code>
 6.  Double click the application *Side Cutters*. It is blocked from running because it is not downloaded from the App  Store.
 7.  Choose Apple menu > System Preferences, click Security & Privacy, then click General.
 8.  Click the lock icon to unlock the settings, then enter an administrator name and password.
