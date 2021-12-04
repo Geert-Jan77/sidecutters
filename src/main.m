@@ -1,7 +1,8 @@
 /*  Side Cutters
 
 Compile:
-    gcc -lobjc -o Side-Cutters src/*.m -framework cocoa
+    chmod +x ./compile.sh
+    ./compile.sh
  
  Run:
     ./Side-Cutters
