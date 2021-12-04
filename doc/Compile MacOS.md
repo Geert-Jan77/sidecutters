@@ -15,6 +15,6 @@ How to compile on MacOS
 6.  Double click the application *Side Cutters*. It is blocked from running because it is not downloaded from the App  Store.
 7.  Choose Apple menu > System Preferences, click Security & Privacy, then click General.
 8.  Click the lock icon to unlock the settings, then enter an administrator name and password.
-9.  Click the [Open Anyway] button. It is right from the message *"Side Cutters" was blocked from use because it is not from an identified developer.*.
+9.  Click the [Open Anyway] button. It is right from the message *"Side Cutters" was blocked from use because it is not from an identified developer.*
 10.  Run the application <code>"Side Cutters"</code> This runs a minimal Cocao application, our own forms will be created in there.
  
