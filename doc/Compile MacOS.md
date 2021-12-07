@@ -63,6 +63,7 @@ To get the real GNU C/C++ package (and its libraries) installed into the /usr/lo
         /usr/local/bin/gcc
         
 8. Check the compiler version
+        
         % gcc -v
         gcc version 11.2.0 (Homebrew GCC 11.2.0_3) 
 
