@@ -5,8 +5,10 @@ How to compile on MacOS
 
 ## Install Xcode Command Line Tools
 
-Xcode requires MacOS 10.12.6 or later. First, open the Mac App Store and install Xcode for free.
-Then, open Xcode, go to Xcode menu (on the menu bar) > Preferences > Downloads, and install Command Line Tools.
+Xcode requires MacOS 10.12.6 or later. 
+1. Open the Mac App Store and install Xcode for free.
+
+2. Open Xcode, go to Xcode menu (on the menu bar) > Preferences > Downloads, and install Command Line Tools.
 
 ### Earlier MacOS versions than 10.12.6
 
@@ -27,33 +29,42 @@ Apple does not include the actual GNU C/C++ compiler in the command-line tool fo
 To get the real GNU C/C++ package (and its libraries) installed into the /usr/local tree:
 1. Install Homebrew package manager
         
-        git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow
-        brew update
-        brew upgrade
+        % git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow
+        % brew update
+        % brew upgrade
         
 2. Require the required right compiler version
         
-        brew install gcc@11
+        % brew install gcc@11
         
 3. Free up disk space
         
-        brew cleanup                        
-4. Check if /usr/local/bin/ is before /usr/bin in your path system variable.  
+        % brew cleanup
         
-        echo $PATH
-        /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet
+4. Check if the system still uses the gcc from Xcode
         
-5. Make a new symbolic link to gcc. Homebrew links gcc under /usr/local/bin/gcc-<version> for compatibility. So, doing
-        
-        ln -sf /usr/local/bin/gcc-11 /usr/local/bin/gcc
-        
-   will point a /usr/local/bin/gcc symlink to gcc-11 installed by Homebrew which should override the gcc from /usr/bin
-6. Check
-        
-        which gcc
+        % which gcc
         /usr/bin/gcc
         
-7. Restart
+5. Check if /usr/local/bin/ is before /usr/bin in your path system variable.  
+        
+        % echo $PATH
+        /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet
+        
+6. Make a new symbolic link to gcc. Homebrew links gcc under /usr/local/bin/gcc-<version> for compatibility. So, doing
+        
+        % ln -sf /usr/local/bin/gcc-11 /usr/local/bin/gcc
+        
+   will point a /usr/local/bin/gcc symlink to gcc-11 installed by Homebrew. This overrides the gcc from /usr/bin
+
+7. Quit Xcode and the terminal, start a new terminal and check       
+ 
+        % which gcc
+        /usr/local/bin/gcc
+        
+8. Check the compiler version
+        % gcc -v
+        gcc version 11.2.0 (Homebrew GCC 11.2.0_3) 
 
 ## Compile and run tests
 
