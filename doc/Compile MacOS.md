@@ -27,13 +27,12 @@ Apple does not include the actual GNU C/C++ compiler in the command-line tool fo
 To get the real GNU C/C++ package (and its libraries) installed into the /usr/local tree:
 
         Install Homebrew package manager
+        git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow
         brew update
         brew upgrade
-        brew search gcc          # this will show several versions of it
-        brew info gcc            # specific information on the current compiler including dependencies
-        brew install gcc         # your MacBook Air on the charger
-        brew install gcc@11.2.0  # your MacBook Air on the charger
-        brew cleanup             # free up disk space. Only run after brew upgrade has installed newer versions
+        optional: brew info gcc            # the current compiler and dependencies          
+        brew install gcc@11.2.0            # require the right compiler version   
+        brew cleanup                       # free up disk space. 
 
 ## Compile and run tests
 
