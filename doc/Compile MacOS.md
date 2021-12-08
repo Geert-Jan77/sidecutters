@@ -66,6 +66,11 @@ To get the real GNU C/C++ package (and its libraries) installed into the /usr/lo
         
         % gcc -v
         gcc version 11.2.0 (Homebrew GCC 11.2.0_3) 
+        
+## Install GTK
+        
+        % brew install gtk+3
+        
 
 ## Compile and run tests
 
