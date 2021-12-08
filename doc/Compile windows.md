@@ -26,6 +26,10 @@ hit [Advanced system properties]. This opens the Advanced tab of system properti
 Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times. 
 3.  Hit the [windows start button], Mouse over the [right arrow icon] right from [Shut down] till the tooltip pops up. Logoff and Logon again. 
 
+## Install GTK
+
+1. Run "MSYS2 MSYS" from Start menu. *pacman -S mingw-w64-x86_64-gtk3* 
+
 ## Compile and run tests
 
 1.  Open the command prompt and run the command ‘gcc -v’ to check if you have the compiler installed.
