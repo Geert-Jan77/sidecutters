@@ -15,7 +15,10 @@ static void activate (GtkApplication *app, gpointer user_data)
     GtkWidget *window;
     window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), "Side Cutters");
-    gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+    GdkRectangle workarea = {0};
+    gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea);
+    //printf ("W: %u x H:%u\n", workarea.width, workarea.height);
+    gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height);
     gtk_widget_show_all (window);
 }
 
