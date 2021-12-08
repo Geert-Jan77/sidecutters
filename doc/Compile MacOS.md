@@ -10,7 +10,7 @@ Xcode requires MacOS 10.12.6 or later.
 
 2. Open Xcode, go to Xcode menu (on the menu bar) > Preferences > Downloads, and install Command Line Tools.
 
-### Earlier MacOS versions than 10.12.6
+#### Earlier MacOS versions than 10.12.6
 
 Whenever you go to download Xcode from the App Store, it tells you "Xcode can’t be installed on “Macintosh HD” because MacOS version 10.12.6 or later is required". There is another way of installing a GCC compiler.
 
@@ -23,7 +23,7 @@ and get a version of Xcode that works on your system. Xcode 4.2 may work, if not
 
 Also get the command line tools.
 
-### Install Brew and GCC 11.2.0
+## Install Brew and GCC 11.2.0
 
 Apple does not include the actual GNU C/C++ compiler in the command-line tool for Xcode. The **gcc** "compatibility" command is a special build of clang/clang++ that is using older gcc compatibility. It is gcc 4.2.1 at the time of writing.
 To get the real GNU C/C++ package (and its libraries) installed into the */usr/local* tree:
@@ -32,7 +32,7 @@ To get the real GNU C/C++ package (and its libraries) installed into the */usr/l
 3. Free up disk space <code>% brew cleanup</code>
 4. Check if the system still uses the gcc from Xcode <code>% which gcc</code> <code>/usr/bin/gcc</code>      
 5. Check if */usr/local/bin/* is before */usr/bin* in your path system variable. <code>% echo $PATH</code> <code>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet</code>    
-6. Make a new symbolic link to gcc. Homebrew links gcc under */usr/local/bin/gcc-<version>* for compatibility. So, doing <code>% ln -sf /usr/local/bin/gcc-11 /usr/local/bin/gcc</code> will point a */usr/local/bin/gcc* symlink to *gcc-11* installed by Homebrew. This overrides the gcc from */usr/bin*
+6. Make a new symbolic link to gcc. Homebrew links gcc under */usr/local/bin/gcc-version* for compatibility. So, doing <code>% ln -sf /usr/local/bin/gcc-11 /usr/local/bin/gcc</code> will point a */usr/local/bin/gcc* symlink to *gcc-11* installed by Homebrew. This overrides the gcc from */usr/bin*
 7. Quit Xcode and the terminal, start a new terminal and check <code>% which gcc</code> <code>/usr/local/bin/gcc</code>
 8. Check the compiler version <code>% gcc -v</code> <code>gcc version 11.2.0 (Homebrew GCC 11.2.0_3) </code>
         
