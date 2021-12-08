@@ -1,5 +1,5 @@
 /* 
-This is the entry point for MS Windows OS
+ This is the entry point for MS Windows OS
 
     compile:
 	
