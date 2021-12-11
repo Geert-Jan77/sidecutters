@@ -49,5 +49,6 @@ To get the real GNU C/C++ package (and its libraries) installed into the */usr/l
 5.  Double click the application *Side Cutters*. It is blocked from running because it is not downloaded from the App  Store.
 6.  Choose Apple menu > System Preferences, click Security & Privacy, then click General.
 7.  Click the [Open Anyway] button. It is right from the message *"Side Cutters" was blocked from use because it is not from an identified developer.*
-8.  Run the application *Side Cutters*. This runs a minimal GTK user interface, our own forms will be created in there.
+![Screenshot](Screenshot.png)
+9.  Run the application *Side Cutters*. This runs a minimal GTK user interface, our own forms will be created in there.
  
