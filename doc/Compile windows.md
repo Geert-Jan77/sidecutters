@@ -28,13 +28,12 @@ Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times.
 
 ## Install GTK
 
-1. Run "MSYS2 MSYS" from Start menu. *pacman -S mingw-w64-x86_64-gtk3* 
+1. Run "MSYS2 64bit -> MSYS2 MSYS" from Start menu. *pacman -S mingw-w64-x86_64-gtk3* 
 
 ## Compile and run tests
 
-1.  Open the command prompt and run the command ‘gcc -v’ to check if you have the compiler installed.
-2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the "sidecutters-main" folder.
-3.  Run the command <code>compile.bat</code>
-4.  Run the command <code>testpdf.exe</code> This creates a bookmarked pdf to test the pdf-export functionality.
-5.  Run the command <code>"Side Cutters.exe"</code> This runs a minimal WinAPI application, our own forms will be created in there.
+1.  Run "MSYS2 64bit -> MSYS2 MinGW 64-bit" from Start menu. 
+2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the 'sidecutters-main' folder. The msys shell listens to both ls (Bash command) and dir (DOS command)
+3.  Run the command <code>./compile-MSwin.sh</code>
+4.  Run the command <code>./'side cutters.exe'</code> This runs a minimal GTK application, our own forms will be created in there. This will also work as <code>"side cutters.exe"</code> on a Command Prompt.
  
