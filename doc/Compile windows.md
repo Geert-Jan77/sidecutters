@@ -6,6 +6,7 @@ How to compile on 64 bit Windows 7 or newer.
 ## Install MSYS
 
 1. Download the installer: msys2-x86_64-20210725.exe https://github.com/msys2/msys2-installer/releases/download/2021-07-25/msys2-x86_64-20210725.exe Verify with SHA256 checksum 7e055b71306e64192e2612f959f54ae99a5cf57186206ac702d113ef00ba35c0. Use 7zip to verify the checksum.
+![Screenshot](screenshot1.png)
 2. Run the installer. MSYS2 requires 64 bit Windows 7 or newer.
 3. Enter your desired Installation Folder (short ASCII-only path on a NTFS volume, no accents, no spaces, no symlinks, no subst or network drives, no FAT).
 4. When done, tick [Run MSYS2] now.
