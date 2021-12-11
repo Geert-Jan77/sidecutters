@@ -45,7 +45,7 @@ To get the real GNU C/C++ package (and its libraries) installed into the */usr/l
 1.  Open the terminal and run the command ‘gcc -v’ to check if you have the compiler version 11.2.0
 2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the "sidecutters-main" folder.
 3.  Run the command <code>chmod +x compile.sh</code>
-4.  <code>./compile.sh</code>
+4.  <code>./compile-MacOS.sh</code>
 5.  Double click the application *Side Cutters*. It is blocked from running because it is not downloaded from the App  Store.
 6.  Choose Apple menu > System Preferences, click Security & Privacy, then click General.
 7.  Click the [Open Anyway] button. It is right from the message *"Side Cutters" was blocked from use because it is not from an identified developer.*
