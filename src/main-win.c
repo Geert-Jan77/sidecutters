@@ -22,6 +22,10 @@ GdkPixbuf *create_pixbuf(const gchar * filename )
 	return pixbuf;
 }
 
+static gboolean query_tooltip(GtkWidget* self, gint x, gint y, gboolean keyboard_mode, GtkTooltip* tooltip, gpointer user_data)
+{
+	return FALSE;
+}
 static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 {
 	static gboolean bLine = TRUE;
@@ -30,6 +34,10 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> polygon );
+}
+
+static void bPolyline_clicked(GtkWidget *button)
+{
 }
 
 int main(int argc, char *argv[] )
@@ -76,20 +84,31 @@ int main(int argc, char *argv[] )
 	GtkWidget *hbox;
     hbox = gtk_box_new (TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox );
+	
 	gtk_box_pack_start (GTK_BOX(hbox), bLine, FALSE, FALSE, 0);
-	gtk_widget_set_tooltip_text (bLine, "Line");
+	gchar *lLine = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
+	gtk_widget_set_tooltip_markup(bLine, lLine);
 	gtk_widget_show(bLine );
-	gtk_box_pack_start (GTK_BOX(hbox), bPolyline, FALSE, FALSE, 0);
-	gtk_widget_set_tooltip_text (bPolyline, "Polyline");
-	gtk_widget_show(bPolyline );
-	gtk_box_pack_start (GTK_BOX(hbox), bExportpdf, FALSE, FALSE, 0);
-	gtk_widget_set_tooltip_text (bExportpdf, "Export Pdf");
-	gtk_widget_show(bExportpdf );
-	gtk_box_pack_start (GTK_BOX(hbox), bExportdxf, FALSE, FALSE, 0);
-	gtk_widget_set_tooltip_text (bExportdxf, "Export Dxf");
-	gtk_widget_show(bExportdxf );
-	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	g_signal_connect(bLine, "clicked", G_CALLBACK(bLine_clicked ), &icons );
+	
+	gtk_box_pack_start (GTK_BOX(hbox), bPolyline, FALSE, FALSE, 0);
+	gchar *lPolyline = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Polyline</span>";
+	gtk_widget_set_tooltip_markup(bPolyline, lPolyline);
+	gtk_widget_show(bPolyline );
+	g_signal_connect(bPolyline, "clicked", G_CALLBACK(bPolyline_clicked ), NULL );
+	
+	gtk_box_pack_start (GTK_BOX(hbox), bExportpdf, FALSE, FALSE, 0);
+	gchar *lExportpdf = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Export Pdf</span>";
+	gtk_widget_set_tooltip_markup(bExportpdf, lExportpdf);
+	gtk_widget_show(bExportpdf );
+	
+	gtk_box_pack_start (GTK_BOX(hbox), bExportdxf, FALSE, FALSE, 0);
+	gchar *lExportdxf = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Export Dxf</span>";
+	gtk_widget_set_tooltip_markup(bExportdxf, lExportdxf);
+	gtk_widget_show(bExportdxf );
+	g_signal_connect(bExportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
+	
+	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	gtk_widget_show(window );
 	gtk_widget_show_all(window );
 	g_signal_connect(G_OBJECT(window ), "destroy", G_CALLBACK(gtk_main_quit ), NULL );
