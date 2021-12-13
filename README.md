@@ -17,4 +17,4 @@ He will press the *Generate* button with the *Side Cutter* icon and all the draw
 ## I want this software!
 Then you should compile it. Read the *doc* folder on how to compile for MacOS or MS Windows.
 
-![A Screenshot of the program so far](/doc/pica1.png)
+![A Screenshot of the program so far](/doc/pica2.png)
