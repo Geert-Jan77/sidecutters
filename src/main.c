@@ -86,24 +86,24 @@ int main(int argc, char *argv[] )
 	gtk_container_add(GTK_CONTAINER(vbox), hbox );
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bLine, FALSE, FALSE, 0);
-	gchar *lLine = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
+	gchar *lLine = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
 	gtk_widget_set_tooltip_markup(bLine, lLine);
 	gtk_widget_show(bLine );
 	g_signal_connect(bLine, "clicked", G_CALLBACK(bLine_clicked ), &icons );
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bPolyline, FALSE, FALSE, 0);
-	gchar *lPolyline = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Polyline</span>";
+	gchar *lPolyline = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Polyline</span>";
 	gtk_widget_set_tooltip_markup(bPolyline, lPolyline);
 	gtk_widget_show(bPolyline );
 	g_signal_connect(bPolyline, "clicked", G_CALLBACK(bPolyline_clicked ), NULL );
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bExportpdf, FALSE, FALSE, 0);
-	gchar *lExportpdf = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Export Pdf</span>";
+	gchar *lExportpdf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Export Pdf</span>";
 	gtk_widget_set_tooltip_markup(bExportpdf, lExportpdf);
 	gtk_widget_show(bExportpdf );
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bExportdxf, FALSE, FALSE, 0);
-	gchar *lExportdxf = "<span font='8' background='#00000002' foreground='#AFAFFFFF'>Export Dxf</span>";
+	gchar *lExportdxf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Export Dxf</span>";
 	gtk_widget_set_tooltip_markup(bExportdxf, lExportdxf);
 	gtk_widget_show(bExportdxf );
 	g_signal_connect(bExportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
