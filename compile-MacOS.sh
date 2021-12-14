@@ -10,6 +10,8 @@ replace=$(pwd)
 echo "I'm going to replace '${search}' with '${replace}/Side Cutters.app/Contents/Resources/rsc/' in '${filename}'"
 if [[ $search != "" && $replace != "" ]]; then
 sed -i "" "s|${search}|${replace}/Side Cutters.app/Contents/Resources/rsc/|" $filename
+sed -i "" "s|${search}|${replace}/Side Cutters.app/Contents/Resources/rsc/|" "src/testpdf.c"
+sed -i "" "s|testpdf.pdf|${replace}/testpdf.pdf|" "src/testpdf.c"
 fi
 gcc src/main_.c -o "Side Cutters.app/Contents/MacOS/Side-Cutters" `pkg-config --cflags --libs gtk+-3.0`
 chmod +x "Side Cutters.app"
