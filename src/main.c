@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "testpdf.c"
 
 // menu 
 void show_message_cb (GtkMenuItem *item, gpointer user_data) 
@@ -11,9 +12,18 @@ void show_uri_cb (GtkMenuItem *item, gpointer user_data)
 	const char* uri = "https://github.com/Geert-Jan77/sidecutters/";
 	guint32 timestamp = GDK_CURRENT_TIME;
 	GError** error;
-	g_print ("Show uri\n");
-	//gboolean gtk_show_uri_on_window ( GtkWindow* parent, const char* uri, guint32 timestamp, GError** error)
 	gtk_show_uri_on_window (NULL, uri, timestamp, NULL);
+}
+
+void export_pdf_cb (GtkMenuItem *item, gpointer user_data) 
+{
+	char* arg[] = {"Test1","Test2"};
+	int iRet = testpdf(arg);
+	GtkWidget *dialog ;
+    if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The bookmarked printable data file 'testpdf.pdf' was exported." );
+    gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy( GTK_WIDGET(dialog) );
 }
 
 // icon
@@ -78,6 +88,7 @@ int main(int argc, char *argv[] )
     GtkWidget *menuItem1, *menuItem2;
     GtkWidget *submenu1, *submenu2;
     GtkWidget *item_message;
+	GtkWidget *item_export_pdf;
     GtkWidget *item_quit;
 	GtkWidget *item_opensource;
     center_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -85,22 +96,25 @@ int main(int argc, char *argv[] )
     menuItem1 = gtk_menu_item_new_with_mnemonic ("_Application");
 	submenu1 = gtk_menu_new ();
     item_message = gtk_menu_item_new_with_label ("Debug Message");
+	item_export_pdf = gtk_menu_item_new_with_label ("Export Pdf");
     item_quit = gtk_menu_item_new_with_label ("Quit");
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu1), item_message);
+	gtk_menu_shell_append (GTK_MENU_SHELL (submenu1), item_export_pdf);
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu1), item_quit);	
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuItem1), submenu1);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), menuItem1);
     menuItem2 = gtk_menu_item_new_with_mnemonic ("_Help");
 	submenu2 = gtk_menu_new ();	
-	item_opensource = gtk_menu_item_new_with_label ("Sourcecode");
+	item_opensource = gtk_menu_item_new_with_label ("View sourcecode on web");
     gtk_menu_shell_append (GTK_MENU_SHELL (submenu2), item_opensource);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuItem2), submenu2);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), menuItem2);
     gtk_box_pack_start (GTK_BOX (center_vbox), menuBar, FALSE, FALSE, 0);
     gtk_container_add (GTK_CONTAINER (window), center_vbox);
-    g_signal_connect_swapped (item_quit, "activate", G_CALLBACK (gtk_widget_destroy), window);
     g_signal_connect (item_message, "activate", G_CALLBACK (show_message_cb), NULL);
-	g_signal_connect (item_opensource, "activate", G_CALLBACK (show_uri_cb), window);
+	g_signal_connect (item_export_pdf, "activate", G_CALLBACK (export_pdf_cb), NULL);
+	g_signal_connect_swapped (item_quit, "activate", G_CALLBACK (gtk_widget_destroy), window);
+	g_signal_connect (item_opensource, "activate", G_CALLBACK (show_uri_cb), NULL);
 	
 	// buttons
 	struct Icons icons;
@@ -167,3 +181,4 @@ int main(int argc, char *argv[] )
 	gtk_main();
   
 }
+

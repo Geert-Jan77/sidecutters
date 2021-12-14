@@ -11,7 +11,8 @@
  
 #include "pdf.h"
 #include "pdf.c"
-int main(int argc, char *argv[]) 
+ 
+int testpdf(char *argv[])
 {
     struct pdf_info info = {.creator = "Side Cutter",
                             .producer = "Side Cutter",
@@ -24,45 +25,29 @@ int main(int argc, char *argv[])
 	float fontheight, textblockposition;
     int bm;
     int err;
+	
+	printf("Export Pdf %s\n", argv[0]);
+	
+/*		Todo			
+    pdf_add_circle(pdf, NULL, 100, 240, 50, 5, PDF_RGB(0xff, 0, 0),
+                   PDF_TRANSPARENT);
+    pdf_add_ellipse(pdf, NULL, 100, 240, 40, 30, 2, PDF_RGB(0xff, 0xff, 0),
+                    PDF_RGB(0, 0, 0));
+    pdf_add_rectangle(pdf, NULL, 150, 150, 100, 100, 4, PDF_RGB(0, 0, 0xff));
+    pdf_add_filled_rectangle(pdf, NULL, 150, 450, 100, 100, 4,
+                             PDF_RGB(0, 0xff, 0));
+    pdf_add_text(pdf, NULL, "This should be transparent", 20, 160, 500,
+                 PDF_ARGB(0x80, 0, 0, 0));		 
+    float p1X[] = {200, 200, 300, 300};
+    float p1Y[] = {200, 300, 200, 300};
+    pdf_add_polygon(pdf, NULL, p1X, p1Y, 4, 4, PDF_RGB(0xaa, 0xff, 0xee));
+    float p2X[] = {400, 400, 500, 500};
+    float p2Y[] = {400, 500, 400, 500};
+    pdf_add_filled_polygon(pdf, NULL, p2X, p2Y, 4, 4,
+                           PDF_RGB(0xff, 0x77, 0x77));
+*/
 
-    /* Unused */
-    (void)argc;
-    (void)argv;
-
-    if (!pdf) {
-        fprintf(stderr, "Unable to create PDF\n");
-        return -1;
-    }
-
-    if (pdf_width(pdf) != PDF_A4_WIDTH || pdf_height(pdf) != PDF_A4_HEIGHT) {
-        fprintf(stderr, "PDF Size mismatch: %fx%f\n", pdf_width(pdf),
-                pdf_height(pdf));
-        return -1;
-    }
-
-    err = pdf_get_font_text_width(pdf, "Times-BoldItalic", "foo", 14, &width);
-    if (err < 0 || width < 18) {
-        fprintf(stderr, "Font width invalid: %d/%f\n", err, width);
-        return -1;
-    }
-
-    if (!pdf_get_err(pdf, &err))
-        return -1;
-
-    pdf_clear_err(pdf);
-    /* From now on, we shouldn't see any errors */
-    /*
-	for (i = 65; i < 92; i++) 
-	{
-        float xpos = (i / 100) * 40.0f;
-        float ypos = (i % 100) * 10.0f;
-        //pdf_add_text(pdf, NULL, "Calibri width ", 8, xpos, ypos, PDF_RGB(i, (i * 4) & 0xff, (i * 8) & 0xff));
-		printf("%d, ", times_widths[i]);
-    }
-	printf("Tilde width %d, ", calibri_widths[95]);
-	printf("a width %d, ", calibri_widths[97]);
-	printf("i width %d, ", calibri_widths[105]);
-	*/
+    
 	
 	pdf_append_page(pdf);
 	pdf_add_bookmark(pdf, NULL, -1, "Page 1 Quadratic Bezier Curve");
@@ -556,25 +541,6 @@ int main(int argc, char *argv[])
         return -1;
     }
     pdf_destroy(pdf);
-	
-/*		Todo			
-    pdf_add_circle(pdf, NULL, 100, 240, 50, 5, PDF_RGB(0xff, 0, 0),
-                   PDF_TRANSPARENT);
-    pdf_add_ellipse(pdf, NULL, 100, 240, 40, 30, 2, PDF_RGB(0xff, 0xff, 0),
-                    PDF_RGB(0, 0, 0));
-    pdf_add_rectangle(pdf, NULL, 150, 150, 100, 100, 4, PDF_RGB(0, 0, 0xff));
-    pdf_add_filled_rectangle(pdf, NULL, 150, 450, 100, 100, 4,
-                             PDF_RGB(0, 0xff, 0));
-    pdf_add_text(pdf, NULL, "This should be transparent", 20, 160, 500,
-                 PDF_ARGB(0x80, 0, 0, 0));		 
-    float p1X[] = {200, 200, 300, 300};
-    float p1Y[] = {200, 300, 200, 300};
-    pdf_add_polygon(pdf, NULL, p1X, p1Y, 4, 4, PDF_RGB(0xaa, 0xff, 0xee));
-    float p2X[] = {400, 400, 500, 500};
-    float p2Y[] = {400, 500, 400, 500};
-    pdf_add_filled_polygon(pdf, NULL, p2X, p2Y, 4, 4,
-                           PDF_RGB(0xff, 0x77, 0x77));
-*/
     
     return 0;
 }
