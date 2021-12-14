@@ -1,4 +1,6 @@
 #include <gtk/gtk.h>
+#include <stdio.h>
+#include <locale.h>
 #include "testpdf.c"
 
 // menu 
@@ -17,7 +19,7 @@ void show_uri_cb (GtkMenuItem *item, gpointer user_data)
 
 void export_pdf_cb (GtkMenuItem *item, gpointer user_data) 
 {
-	char* arg[] = {"Test1","Test2"};
+	char* arg[] = {"exportpdf.pdf", "rsc/side cutters.jpg" };
 	int iRet = testpdf(arg);
 	GtkWidget *dialog ;
     if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The bookmarked printable data file 'testpdf.pdf' was exported." );
@@ -64,10 +66,23 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 }
 static void bPolyline_clicked(GtkWidget *button)
 {
+	setlocale(LC_ALL, "Dutch_Netherlands.1252"); // ".OCP" if you want to use system settings
+	FILE *fp1;  
+	fp1 = fopen("file.txt", "w");//opening file  
+	fprintf(fp1, "Locale Dutch_Netherlands.1252 A float should include a dot; not a comma. Pi = %f\n", 3.141592653589f); //writing data into file  
+	fprintf(fp1, "/MediaBox [0 0 %f %f]\n", 3.141592653589f, 3.141592653589f);
+	fprintf(fp1, "FilePrint, a float should include a dot; not a comma! Pi = %.6f\n", 3.141592653589f); //writing data into file  
+	fprintf(fp1, "/MediaBox [0 0 %.6f %.6f]\n", 3.141592653589f, 3.141592653589f);
+	setlocale(LC_ALL, "C");
+	fprintf(fp1, "Locale C A float should include a dot; not a comma. Pi = %f\n", 3.141592653589f); //writing data into file  
+	fprintf(fp1, "/MediaBox [0 0 %f %f]\n", 3.141592653589f, 3.141592653589f);
+	fclose(fp1);//closing file  
 }
 
 int main(int argc, char *argv[] )
 {
+	setlocale(LC_ALL, "C");
+	
 	// main window
 	GtkWidget *window;
 	GdkPixbuf *icon;
