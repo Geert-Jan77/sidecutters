@@ -1,14 +1,22 @@
 #include <gtk/gtk.h>
 
-struct Icons
+// menu 
+void show_message_cb (GtkMenuItem *item, gpointer user_data) 
 {
-	GtkWidget *line;
-	GtkWidget *polyline;
-	GtkWidget *polygon;
-	GtkWidget *exportpdf;
-	GtkWidget *exportdxf;
-};
+    g_print ("Debug Message\n");
+}
 
+void show_uri_cb (GtkMenuItem *item, gpointer user_data) 
+{
+	const char* uri = "https://github.com/Geert-Jan77/sidecutters/";
+	guint32 timestamp = GDK_CURRENT_TIME;
+	GError** error;
+	g_print ("Show uri\n");
+	//gboolean gtk_show_uri_on_window ( GtkWindow* parent, const char* uri, guint32 timestamp, GError** error)
+	gtk_show_uri_on_window (NULL, uri, timestamp, NULL);
+}
+
+// icon
 GdkPixbuf *create_pixbuf(const gchar * filename ) 
 {
 	GdkPixbuf *pixbuf;
@@ -22,6 +30,15 @@ GdkPixbuf *create_pixbuf(const gchar * filename )
 	return pixbuf;
 }
 
+// buttons
+struct Icons
+{
+	GtkWidget *line;
+	GtkWidget *polyline;
+	GtkWidget *polygon;
+	GtkWidget *exportpdf;
+	GtkWidget *exportdxf;
+};
 static gboolean query_tooltip(GtkWidget* self, gint x, gint y, gboolean keyboard_mode, GtkTooltip* tooltip, gpointer user_data)
 {
 	return FALSE;
@@ -35,13 +52,13 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> polygon );
 }
-
 static void bPolyline_clicked(GtkWidget *button)
 {
 }
 
 int main(int argc, char *argv[] )
 {
+	// main window
 	GtkWidget *window;
 	GdkPixbuf *icon;
 	gtk_init(&argc, &argv );
@@ -50,8 +67,42 @@ int main(int argc, char *argv[] )
 	GdkRectangle workarea = {0 };
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea );
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height );
-	icon = create_pixbuf("rsc/icon.png" );  
+	
+	// icon
+	icon = create_pixbuf("rsc/icon.png" ); 
 	gtk_window_set_icon(GTK_WINDOW(window), icon );
+	
+	// menu
+	GtkWidget *center_vbox;
+    GtkWidget *menuBar;
+    GtkWidget *menuItem1, *menuItem2;
+    GtkWidget *submenu1, *submenu2;
+    GtkWidget *item_message;
+    GtkWidget *item_quit;
+	GtkWidget *item_opensource;
+    center_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    menuBar =gtk_menu_bar_new ();
+    menuItem1 = gtk_menu_item_new_with_mnemonic ("_Application");
+	submenu1 = gtk_menu_new ();
+    item_message = gtk_menu_item_new_with_label ("Debug Message");
+    item_quit = gtk_menu_item_new_with_label ("Quit");
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu1), item_message);
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu1), item_quit);	
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuItem1), submenu1);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), menuItem1);
+    menuItem2 = gtk_menu_item_new_with_mnemonic ("_Help");
+	submenu2 = gtk_menu_new ();	
+	item_opensource = gtk_menu_item_new_with_label ("Sourcecode");
+    gtk_menu_shell_append (GTK_MENU_SHELL (submenu2), item_opensource);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuItem2), submenu2);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), menuItem2);
+    gtk_box_pack_start (GTK_BOX (center_vbox), menuBar, FALSE, FALSE, 0);
+    gtk_container_add (GTK_CONTAINER (window), center_vbox);
+    g_signal_connect_swapped (item_quit, "activate", G_CALLBACK (gtk_widget_destroy), window);
+    g_signal_connect (item_message, "activate", G_CALLBACK (show_message_cb), NULL);
+	g_signal_connect (item_opensource, "activate", G_CALLBACK (show_uri_cb), window);
+	
+	// buttons
 	struct Icons icons;
 	icons.line = gtk_image_new_from_file("rsc/line.xpm" );
 	icons.polyline = gtk_image_new_from_file("rsc/polyline.xpm" );
@@ -80,7 +131,7 @@ int main(int argc, char *argv[] )
 	gtk_button_set_image (GTK_BUTTON(bExportdxf), iExportdxf );
 	GtkWidget *vbox;
     vbox = gtk_box_new (FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(window), vbox );
+	gtk_container_add(GTK_CONTAINER(center_vbox), vbox );
 	GtkWidget *hbox;
     hbox = gtk_box_new (TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox );
@@ -112,7 +163,7 @@ int main(int argc, char *argv[] )
 	gtk_widget_show(window );
 	gtk_widget_show_all(window );
 	g_signal_connect(G_OBJECT(window ), "destroy", G_CALLBACK(gtk_main_quit ), NULL );
-	g_object_unref(icon );    
+	g_object_unref(icon ); 	
 	gtk_main();
+  
 }
-
