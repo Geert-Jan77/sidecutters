@@ -1,0 +1,4 @@
+IDI_MYICON ICON "side cutters.ico"
+IDI_MYICONB ICON "side cutters.ico"
+
+// compile windres icon.rc -O coff -o icon.res  
