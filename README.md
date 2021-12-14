@@ -1,5 +1,6 @@
 # Side Cutters
-CAD Software
+Free CAD Software\
+*The millimetre you see is the millimetre you get*
 
 ## Aim
 This software should be free. The aim of this project is to create a multi platform app while starting from a windows platform.
@@ -15,3 +16,5 @@ He will press the *Generate* button with the *Side Cutter* icon and all the draw
 
 ## I want this software!
 Then you should compile it. Read the *doc* folder on how to compile for MacOS or MS Windows.
+
+<img src="/doc/pica4.png" alt="a screenshot of the program so far" width="50%"/><img src="/doc/pica5.png" alt="a screenshot of the program so far" width="50%"/>
