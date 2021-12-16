@@ -1,6 +1,12 @@
 # Side Cutters
-Free CAD Software\
-*The millimetre you see is the millimetre you get*
+                                                                                                                                                              
+
+<img src="/rsc/icon.png" alt="a screenshot of the program so far"/>   
+
+**Free CAD Software**
+
+*The millimetre you see is the millimetre you get*                                     
+                                                                                                                                                             
 
 ## Aim
 This software should be free. The aim of this project is to create a multi platform app while starting from a windows platform.
