@@ -706,6 +706,9 @@ static int pdf_get_bookmark_count(const struct pdf_object *obj)
 
 static int pdf_save_object(struct pdf_doc *pdf, FILE *fp, int index)
 {
+    char buff1[255];
+    int j1;
+    
     struct pdf_object *object = pdf_get_object(pdf, index);
     if (!object)
         return -ENOENT;
@@ -748,8 +751,10 @@ static int pdf_save_object(struct pdf_doc *pdf, FILE *fp, int index)
                 "/Type /Page\r\n"
                 "/Parent %d 0 R\r\n",
                 pages->index);
-        fprintf(fp, "/MediaBox [0 0 %f %f]\r\n", object->page.width,
-                object->page.height);
+        j1 = snprintf(buff1, 50, "/MediaBox [0 0 %f %f]", object->page.width, object->page.height);
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        fprintf(fp, "%s\r\n", buff1);
+        //fprintf(fp, "/MediaBox [0 0 %f %f]\r\n", object->page.width, object->page.height);
         fprintf(fp, "/Resources <<\r\n");
         fprintf(fp, "  /Font <<\r\n");
         for (struct pdf_object *font = pdf_find_first_object(pdf, OBJ_font);
@@ -758,7 +763,10 @@ static int pdf_save_object(struct pdf_doc *pdf, FILE *fp, int index)
         fprintf(fp, "  >>\r\n");
         fprintf(fp, "  /ExtGState <<\r\n");
         for (int i = 0; i < 16; i++) {
-            fprintf(fp, "  /GS%d <</ca %f>>\r\n", i, (float)(15 - i) / 15);
+            j1 = snprintf(buff1, 50, "  /GS%d <</ca %f>>", i, (float)(15 - i) / 15);
+            for (int k = 0; k < j1; k++) { if (buff1[k] == ',') buff1[k]='.'; }
+            fprintf(fp, "%s\r\n", buff1);
+            //fprintf(fp, "  /GS%d <</ca %f>>\r\n", i, (float)(15 - i) / 15);
         }
         fprintf(fp, "  >>\r\n");
 
@@ -790,13 +798,11 @@ static int pdf_save_object(struct pdf_doc *pdf, FILE *fp, int index)
             parent = pdf_find_first_object(pdf, OBJ_outline);
         if (!object->bookmark.page)
             break;
-        fprintf(fp,
-                "<<\r\n"
-                "/Dest [%d 0 R /XYZ 0 %f null]\r\n"
-                "/Parent %d 0 R\r\n"
-                "/Title (%s)\r\n",
-                object->bookmark.page->index, pdf->height, parent->index,
-                object->bookmark.name);
+        j1 = snprintf(buff1, 255, "<<\r\n/Dest [%d 0 R /XYZ 0 %f null]\r\n/Parent %d 0 R\r\n/Title (%s)",      object->bookmark.page->index, pdf->height, parent->index, object->bookmark.name);
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        fprintf(fp, "%s\r\n", buff1);
+        //fprintf(fp, "<<\r\n/Dest [%d 0 R /XYZ 0 %f null]\r\n/Parent %d 0 R\r\n/Title (%s)\r\n",      object->bookmark.page->index, pdf->height, parent->index, object->bookmark.name);
+        
         int nchildren = flexarray_size(&object->bookmark.children);
         if (nchildren > 0) {
             struct pdf_object *f, *l;
@@ -1118,6 +1124,8 @@ static int pdf_add_text_spacing(struct pdf_doc *pdf, struct pdf_object *page,
                                 const char *text, float size, float xoff,
                                 float yoff, uint32_t colour, float spacing)
 {
+    char buff1[255];
+    int j1;
     int ret;
     size_t len = text ? strlen(text) : 0;
     struct dstr str = INIT_DSTR;
@@ -1126,10 +1134,22 @@ static int pdf_add_text_spacing(struct pdf_doc *pdf, struct pdf_object *page,
         return 0;
     dstr_append(&str, "BT ");
     dstr_printf(&str, "/GS%d gs ", alpha);
-    dstr_printf(&str, "%f %f TD ", xoff, yoff);
-    dstr_printf(&str, "/F%d %f Tf ", pdf->current_font->font.index, size);
-    dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
-	dstr_printf(&str, "%f Tc ", spacing);
+    j1 = snprintf(buff1, 255, "%f %f TD ", xoff, yoff);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f TD ", xoff, yoff);
+    j1 = snprintf(buff1, 255, "/F%d %f Tf ", pdf->current_font->font.index, size);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "/F%d %f Tf ", pdf->current_font->font.index, size);
+    j1 = snprintf(buff1, 255, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f Tc ", spacing);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f Tc ", spacing);
     dstr_append(&str, "(");
     for (size_t i = 0; i < len;) {
         int code_len;
@@ -1624,13 +1644,27 @@ int pdf_add_line(struct pdf_doc *pdf, struct pdf_object *page, float x1,
                  float y1, float x2, float y2, float width, uint32_t colour)
 {
     int ret;
+    int j1;
+    char buff1[255];
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f w\r\n", width);
-    dstr_printf(&str, "%f %f m\r\n", x1, y1);
+    j1 = snprintf(buff1, 255, "%f w\r\n", width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w\r\n", width);
+    j1 = snprintf(buff1, 255, "%f %f m\r\n", x1, y1);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f m\r\n", x1, y1);
     dstr_printf(&str, "/DeviceRGB CS\r\n");
-    dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f %f l S\r\n", x2, y2);
+    j1 = snprintf(buff1, 255, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),
+    PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f %f l S\r\n", x2, y2);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f l S\r\n", x2, y2);
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
     dstr_free(&str);
     return ret;
@@ -1643,13 +1677,24 @@ int pdf_add_cubic_bezier(struct pdf_doc *pdf, struct pdf_object *page,
 {
     int ret;
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f w\r\n", width);
-    dstr_printf(&str, "%f %f m\r\n", x1, y1);
+    int j1;
+    char buff1[255];
+
+    j1 = snprintf(buff1, 255, "%f %f m\r\n", x1, y1);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f m\r\n", x1, y1);
     dstr_printf(&str, "/DeviceRGB CS\r\n");
-    dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f %f %f %f %f %f c S\r\n", xq1, yq1, xq2, yq2, x2,
-                y2);
+    j1 = snprintf(buff1, 255, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),
+    PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),  PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f %f %f %f %f %f c S\r\n", xq1, yq1, xq2, yq2, x2,
+    y2);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f %f %f %f c S\r\n", xq1, yq1, xq2, yq2, x2,  y2);
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
     dstr_free(&str);
     return ret;
@@ -1673,40 +1718,60 @@ int pdf_add_custom_path(struct pdf_doc *pdf, struct pdf_object *page,
                         int operation_count, float stroke_width,
                         uint32_t stroke_colour, uint32_t fill_colour)
 {
+    char buff1[255];
+    int j1;
     int ret;
     struct dstr str = INIT_DSTR;
 
     if (!PDF_IS_TRANSPARENT(fill_colour)) {
         dstr_printf(&str, "/DeviceRGB CS\r\n");
-        dstr_printf(&str, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour),
-                    PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
+        j1 = snprintf(buff1, 255, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour), PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        dstr_printf(&str, "%s", buff1);
+        //dstr_printf(&str, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour), PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
     }
-    dstr_printf(&str, "%f w\r\n", stroke_width);
+    j1 = snprintf(buff1, 255, "%f w\r\n", stroke_width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w\r\n", stroke_width);
     dstr_printf(&str, "/DeviceRGB CS\r\n");
-    dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(stroke_colour),
-                PDF_RGB_G(stroke_colour), PDF_RGB_B(stroke_colour));
+    j1 = snprintf(buff1, 255, "%f %f %f RG\r\n", PDF_RGB_R(stroke_colour), PDF_RGB_G(stroke_colour), PDF_RGB_B(stroke_colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(stroke_colour), PDF_RGB_G(stroke_colour), PDF_RGB_B(stroke_colour));
 
     for (int i = 0; i < operation_count; i++) {
         struct pdf_path_operation operation = operations[i];
         switch (operation.op) {
         case 'm':
-            dstr_printf(&str, "%f %f m\r\n", operation.x1, operation.y1);
+            j1 = snprintf(buff1, 255, "%f %f m\r\n", operation.x1, operation.y1);
+            for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+            dstr_printf(&str, "%s", buff1);
+            //dstr_printf(&str, "%f %f m\r\n", operation.x1, operation.y1);
             break;
         case 'l':
-            dstr_printf(&str, "%f %f l\r\n", operation.x1, operation.y1);
+            j1 = snprintf(buff1, 255, "%f %f l\r\n", operation.x1, operation.y1);
+            for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+            dstr_printf(&str, "%s", buff1);
+            //dstr_printf(&str, "%f %f l\r\n", operation.x1, operation.y1);
             break;
         case 'c':
-            dstr_printf(&str, "%f %f %f %f %f %f c\r\n", operation.x1,
-                        operation.y1, operation.x2, operation.y2,
-                        operation.x3, operation.y3);
+            j1 = snprintf(buff1, 255, "%f %f %f %f %f %f c\r\n", operation.x1, operation.y1, operation.x2, operation.y2, operation.x3, operation.y3);
+            for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+            dstr_printf(&str, "%s", buff1);
+            //dstr_printf(&str, "%f %f %f %f %f %f c\r\n", operation.x1, operation.y1, operation.x2, operation.y2, operation.x3, operation.y3);
             break;
         case 'v':
-            dstr_printf(&str, "%f %f %f %f v\r\n", operation.x1, operation.y1,
-                        operation.x2, operation.y2);
+            j1 = snprintf(buff1, 255, "%f %f %f %f v\r\n", operation.x1, operation.y1, operation.x2, operation.y2);
+            for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+            dstr_printf(&str, "%s", buff1);
+            //dstr_printf(&str, "%f %f %f %f v\r\n", operation.x1, operation.y1, operation.x2, operation.y2);
             break;
         case 'y':
-            dstr_printf(&str, "%f %f %f %f y\r\n", operation.x1, operation.y1,
-                        operation.x2, operation.y2);
+            j1 = snprintf(buff1, 255, "%f %f %f %f y\r\n", operation.x1, operation.y1, operation.x2, operation.y2);
+            for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+            dstr_printf(&str, "%s", buff1);
+            //dstr_printf(&str, "%f %f %f %f y\r\n", operation.x1, operation.y1,  operation.x2, operation.y2);
             break;
         case 'h':
             dstr_printf(&str, "h\r\n");
@@ -1733,34 +1798,47 @@ int pdf_add_ellipse(struct pdf_doc *pdf, struct pdf_object *page, float x,
     int ret;
     struct dstr str = INIT_DSTR;
     float lx, ly;
-
+    int j1;
+    char buff1[255];
     lx = (4.0f / 3.0f) * (M_SQRT2 - 1) * xradius;
     ly = (4.0f / 3.0f) * (M_SQRT2 - 1) * yradius;
 
     if (!PDF_IS_TRANSPARENT(fill_colour)) {
         dstr_printf(&str, "/DeviceRGB CS\r\n");
-        dstr_printf(&str, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour),
-                    PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
+        j1 = snprintf(buff1, 255, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour), PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        dstr_printf(&str, "%s", buff1);
+        //dstr_printf(&str, "%f %f %f rg\r\n", PDF_RGB_R(fill_colour), PDF_RGB_G(fill_colour), PDF_RGB_B(fill_colour));
     }
     dstr_printf(&str, "/DeviceRGB CS\r\n");
-    dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-
-    dstr_printf(&str, "%f w ", width);
-
-    dstr_printf(&str, "%.2f %.2f m ", (x + xradius), (y));
-
-    dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + xradius),
-                (y - ly), (x + lx), (y - yradius), x, (y - yradius));
-
-    dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - lx),
-                (y - yradius), (x - xradius), (y - ly), (x - xradius), y);
-
-    dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - xradius),
-                (y + ly), (x - lx), (y + yradius), x, (y + yradius));
-
-    dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + lx),
-                (y + yradius), (x + xradius), (y + ly), (x + xradius), y);
+    j1 = snprintf(buff1, 255, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG\r\n", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f w ", width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w ", width);
+    j1 = snprintf(buff1, 255, "%.2f %.2f m ", (x + xradius), (y));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%.2f %.2f m ", (x + xradius), (y));
+    j1 = snprintf(buff1, 255, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + xradius), (y - ly), (x + lx), (y - yradius), x, (y - yradius));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + xradius), (y - ly), (x + lx), (y - yradius), x, (y - yradius));
+    j1 = snprintf(buff1, 255, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - lx), (y - yradius), (x - xradius), (y - ly), (x - xradius), y);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - lx), (y - yradius), (x - xradius), (y - ly), (x - xradius), y);
+    j1 = snprintf(buff1, 255, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - xradius), (y + ly), (x - lx), (y + yradius), x, (y + yradius));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x - xradius), (y + ly), (x - lx), (y + yradius), x, (y + yradius));
+    j1 = snprintf(buff1, 255, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + lx), (y + yradius), (x + xradius), (y + ly), (x + xradius), y);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%.2f %.2f %.2f %.2f %.2f %.2f c ", (x + lx), (y + yradius), (x + xradius), (y + ly), (x + xradius), y);
     if (PDF_IS_TRANSPARENT(fill_colour))
         dstr_printf(&str, "%s", "S ");
     else
@@ -1783,12 +1861,21 @@ int pdf_add_rectangle(struct pdf_doc *pdf, struct pdf_object *page, float x,
                       uint32_t colour)
 {
     int ret;
+    int j1;
+    char buff1[255];
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f w ", border_width);
-    dstr_printf(&str, "%f %f %f %f re S ", x, y, width, height);
-
+    j1 = snprintf(buff1, 255, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f w ", border_width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w ", border_width);
+    j1 = snprintf(buff1, 255, "%f %f %f %f re S ", x, y, width, height);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f %f re S ", x, y, width, height);
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
     dstr_free(&str);
 
@@ -1800,11 +1887,21 @@ int pdf_add_filled_rectangle(struct pdf_doc *pdf, struct pdf_object *page,
                              float border_width, uint32_t colour)
 {
     int ret;
+    int j1;
+    char buff1[255];
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f w ", border_width);
-    dstr_printf(&str, "%f %f %f %f re f ", x, y, width, height);
+    j1 = snprintf(buff1, 255, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour),PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour),PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f w ", border_width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w ", border_width);
+    j1 = snprintf(buff1, 255, "%f %f %f %f re f ", x, y, width, height);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f %f re f ", x, y, width, height);
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
     dstr_free(&str);
     return ret;
@@ -1814,13 +1911,26 @@ int pdf_add_polygon(struct pdf_doc *pdf, struct pdf_object *page, float x[],
                     float y[], int count, float border_width, uint32_t colour)
 {
     int ret;
+    int j1;
+    char buff1[255];
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f w ", border_width);
-    dstr_printf(&str, "%f %f m ", x[0], y[0]);
+    j1 = snprintf(buff1, 255, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f w ", border_width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w ", border_width);
+    j1 = snprintf(buff1, 255, "%f %f m ", x[0], y[0]);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f m ", x[0], y[0]);
     for (int i = 1; i < count; i++) {
-        dstr_printf(&str, "%f %f l ", x[i], y[i]);
+        j1 = snprintf(buff1, 255, "%f %f l ", x[i], y[i]);
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        dstr_printf(&str, "%s", buff1);
+        //dstr_printf(&str, "%f %f l ", x[i], y[i]);
     }
     dstr_printf(&str, "h S ");
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
@@ -1834,15 +1944,30 @@ int pdf_add_filled_polygon(struct pdf_doc *pdf, struct pdf_object *page,
                            float border_width, uint32_t colour)
 {
     int ret;
+    int j1;
+    char buff1[255];
     struct dstr str = INIT_DSTR;
-    dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour),
-                PDF_RGB_B(colour));
-    dstr_printf(&str, "%f w ", border_width);
-    dstr_printf(&str, "%f %f m ", x[0], y[0]);
+    j1 = snprintf(buff1, 255, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f RG ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f %f rg ", PDF_RGB_R(colour), PDF_RGB_G(colour), PDF_RGB_B(colour));
+    j1 = snprintf(buff1, 255, "%f w ", border_width);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f w ", border_width);
+    j1 = snprintf(buff1, 255, "%f %f m ", x[0], y[0]);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f %f m ", x[0], y[0]);
     for (int i = 1; i < count; i++) {
-        dstr_printf(&str, "%f %f l ", x[i], y[i]);
+        j1 = snprintf(buff1, 255, "%f %f l ", x[i], y[i]);
+        for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+        dstr_printf(&str, "%s", buff1);
+        //dstr_printf(&str, "%f %f l ", x[i], y[i]);
     }
     dstr_printf(&str, "h f ");
     ret = pdf_add_stream(pdf, page, dstr_data(&str));
@@ -2254,9 +2379,13 @@ static int pdf_add_image(struct pdf_doc *pdf, struct pdf_object *page,
 {
     int ret;
     struct dstr str = INIT_DSTR;
-
+    int j1;
+    char buff1[255];
     dstr_append(&str, "q ");
-    dstr_printf(&str, "%f 0 0 %f %f %f cm ", width, height, x, y);
+    j1 = snprintf(buff1, 255, "%f 0 0 %f %f %f cm ", width, height, x, y);
+    for (int i = 0; i < j1; i++) { if (buff1[i] == ',') buff1[i]='.'; }
+    dstr_printf(&str, "%s", buff1);
+    //dstr_printf(&str, "%f 0 0 %f %f %f cm ", width, height, x, y);
     dstr_printf(&str, "/Image%d Do ", image->index);
     dstr_append(&str, "Q");
 

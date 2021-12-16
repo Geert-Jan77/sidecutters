@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include <locale.h>
 #include "testpdf.c"
 
 static char *sFromConf(char *KeytoFind )
@@ -174,7 +173,6 @@ static void bPolyline_clicked(GtkWidget *button)
     {
         free(line);
     }
-     
 }
 
 static void bExportpdf_clicked(GtkWidget *button)
@@ -183,7 +181,12 @@ static void bExportpdf_clicked(GtkWidget *button)
     float val;
     FILE *fp1;
     fp1 = fopen("config", "w");
-    fprintf(fp1, "Pi = %f\n", 3.141592653589f); // try to read with scanf
+    char buffer[12];
+    int j = snprintf(buffer, 12, "%f", 3.141592653589f);
+    g_print("%s\n", buffer);
+    for (int i = 0; i < j; i++) { if (buffer[i] == ',') buffer[i]='.'; }
+    g_print("%s\n", buffer);
+    fprintf(fp1, "Pi = %s\n", buffer); // Read with scanf
     fprintf(fp1, "Resource = rsc/\n");
     fprintf(fp1, "Filetest = testpdf.pdf\n");
     fprintf(fp1, "Working = workingdirectory\n");
@@ -199,8 +202,7 @@ static void bExportpdf_clicked(GtkWidget *button)
 
 int main(int argc, char *argv[] )
 {
-	setlocale(LC_NUMERIC, "C");
-	
+
 	// main window
 	GtkWidget *window;
 	GdkPixbuf *icon;

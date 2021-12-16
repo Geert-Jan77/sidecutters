@@ -50,7 +50,7 @@ int testpdf(char *argv[])
 	pdf_append_page(pdf);
 	pdf_add_bookmark(pdf, NULL, -1, "Page 1 Quadratic Bezier Curve");
 	pdf_page_set_size(pdf, NULL, PDF_A4_HEIGHT, PDF_A4_WIDTH);
-	pdf_set_font(pdf, "Calibri");
+	pdf_set_font(pdf, "Helvetica");
 	pdf_add_text(pdf, NULL, "y = 20", 12, 50, 26, PDF_BLACK);
 	pdf_add_line(pdf, NULL, 50, 20, 150, 20, 0.3, PDF_BLACK);
 	pdf_add_circle(pdf, NULL, 500, 20, 2, 0.3, PDF_BLACK, PDF_WHITE); // x = 500 y = 20 radius 2 width 0.3
@@ -65,7 +65,7 @@ int testpdf(char *argv[])
     pdf_append_page(pdf);
 	pdf_add_bookmark(pdf, NULL, -1, "Page 2 Cubic Bezier Curve");
 	pdf_page_set_size(pdf, NULL, PDF_A4_HEIGHT, PDF_A4_WIDTH);
-	pdf_set_font(pdf, "Calibri");
+	pdf_set_font(pdf, "Helvetica");
 	pdf_add_text(pdf, NULL, "y = 20", 12, 50, 26, PDF_BLACK);
 	pdf_add_line(pdf, NULL, 50, 20, 150, 20, 0.3, PDF_BLACK);
 	pdf_add_circle(pdf, NULL, 500, 20, 2, 0.3, PDF_BLACK, PDF_WHITE); // x = 500 y = 20 radius 2 width 0.3
@@ -132,8 +132,8 @@ int testpdf(char *argv[])
 	pdf_add_bookmark(pdf, NULL, -1, "Page 7 TextBoxes in all supported fonts");
 	fontheight = 10;
 	textblockposition = 800;
-	pdf_set_font(pdf, "Calibri");
-	pdf_add_text(pdf, NULL, "Calibri 10 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
+	//pdf_set_font(pdf, "Calibri");
+	//pdf_add_text(pdf, NULL, "Calibri 10 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica");
 	pdf_add_text(pdf, NULL, "Helvetica", fontheight, 50, textblockposition - 2 * fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica-Bold");
@@ -161,8 +161,8 @@ int testpdf(char *argv[])
     
 	fontheight = 12;
 	textblockposition = 660;
-	pdf_set_font(pdf, "Calibri");
-	pdf_add_text(pdf, NULL, "Calibri 12 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
+	//pdf_set_font(pdf, "Calibri");
+	//pdf_add_text(pdf, NULL, "Calibri 12 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica");
 	pdf_add_text(pdf, NULL, "Helvetica", fontheight, 50, textblockposition - 2 * fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica-Bold");
@@ -190,8 +190,8 @@ int testpdf(char *argv[])
 	
 	fontheight = 15.6;
 	textblockposition = 492;
-	pdf_set_font(pdf, "Calibri");
-	pdf_add_text(pdf, NULL, "Calibri 15.6 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
+	//pdf_set_font(pdf, "Calibri");
+	//pdf_add_text(pdf, NULL, "Calibri 15.6 pt.", fontheight, 50, textblockposition -  fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica");
 	pdf_add_text(pdf, NULL, "Helvetica", fontheight, 50, textblockposition - 2 * fontheight, PDF_BLACK);
 	pdf_set_font(pdf, "Helvetica-Bold");
@@ -219,7 +219,7 @@ int testpdf(char *argv[])
 	
 	pdf_append_page(pdf);
 	pdf_add_bookmark(pdf, NULL, -1, "Page 8 Image, Barcode, Line");
-	pdf_set_font(pdf, "Calibri");
+	pdf_set_font(pdf, "Helvetica");
 
     pdf_add_image_file(pdf, NULL, 150, 50, 200, 200, argv[1]); // 995 * 996  argv[1] is the resource path and image file
     pdf_add_barcode(pdf, NULL, PDF_BARCODE_128A, 50, 300, 200, 50, "Code128", PDF_RGB(0, 0, 0));
@@ -254,9 +254,9 @@ int testpdf(char *argv[])
 
     
 	pdf_append_page(pdf);
-	pdf_add_bookmark(pdf, NULL, -1, "Page 11 Text Wrapping Calibri");
+	pdf_add_bookmark(pdf, NULL, -1, "Page 11 Text Wrapping");
 	pdf_page_set_size(pdf, NULL, PDF_A4_HEIGHT, PDF_A4_WIDTH);
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
 		"space                       space                       space                       space                       space\n"
@@ -267,7 +267,7 @@ int testpdf(char *argv[])
         16, 60, 400, PDF_RGB(0, 0, 0), 300, PDF_ALIGN_JUSTIFY, &height);
     pdf_add_rectangle(pdf, NULL, 58, 400 + 16 - 2, 304, -height - 2, 2, PDF_RGB(0, 0, 0));
 	
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
 		"space                       space                       space                       space                       space\n"
@@ -280,9 +280,9 @@ int testpdf(char *argv[])
 	
 
 	pdf_append_page(pdf);
-	pdf_add_bookmark(pdf, NULL, -1, "Page 12 Text Wrapping Calibri");
+	pdf_add_bookmark(pdf, NULL, -1, "Page 12 Text Wrapping");
 	pdf_page_set_size(pdf, NULL, PDF_A3_WIDTH, PDF_A3_HEIGHT);
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
@@ -314,7 +314,7 @@ int testpdf(char *argv[])
         16, 60, 1100, PDF_RGB(0, 0, 0), 300, PDF_ALIGN_JUSTIFY, &height);
     pdf_add_rectangle(pdf, NULL, 58, 1100 + 16 - 2, 304, -height - 2, 2, PDF_RGB(0, 0, 0));
 	
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
@@ -347,9 +347,9 @@ int testpdf(char *argv[])
     pdf_add_rectangle(pdf, NULL, 458, 1100 + 12 - 2, 304, -height - 2 , 2, PDF_RGB(0, 0, 0));
 	
 	pdf_append_page(pdf);
-	pdf_add_bookmark(pdf, NULL, -1, "Page 13 Text Wrapping Calibri");
+	pdf_add_bookmark(pdf, NULL, -1, "Page 13 Text Wrapping");
 	pdf_page_set_size(pdf, NULL, PDF_A3_WIDTH, PDF_A3_HEIGHT);
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n"
@@ -381,7 +381,7 @@ int testpdf(char *argv[])
         16, 60, 1100, PDF_RGB(0, 0, 0), 300, PDF_ALIGN_JUSTIFY, &height);
     pdf_add_rectangle(pdf, NULL, 58, 1100 + 16 - 2, 304, -height - 2, 2, PDF_RGB(0, 0, 0));
 	
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n"
@@ -415,9 +415,9 @@ int testpdf(char *argv[])
 	
 	pdf_append_page(pdf);
 	// other ascii 0-127 characters: !"#$%&'()*+,-./0123456789:;<=>?@
-	pdf_add_bookmark(pdf, NULL, -1, "Page 14 Text Wrapping Calibri");
+	pdf_add_bookmark(pdf, NULL, -1, "Page 14 Text Wrapping");
 	pdf_page_set_size(pdf, NULL, PDF_A3_WIDTH, PDF_A3_HEIGHT);
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
@@ -497,9 +497,9 @@ int testpdf(char *argv[])
 	
 	// other ascii 0-127 characters: [\]^_`{|}~
 	pdf_append_page(pdf);
-	pdf_add_bookmark(pdf, NULL, -1, "Page 15 Text Wrapping Calibri");
+	pdf_add_bookmark(pdf, NULL, -1, "Page 15 Text Wrapping");
 	pdf_page_set_size(pdf, NULL, PDF_A3_WIDTH, PDF_A3_HEIGHT);
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["
@@ -515,7 +515,7 @@ int testpdf(char *argv[])
         16, 60, 1100, PDF_RGB(0, 0, 0), 300, PDF_ALIGN_JUSTIFY, &height);
     pdf_add_rectangle(pdf, NULL, 58, 1100 + 16 - 2, 304, -height - 2, 2, PDF_RGB(0, 0, 0));
 	
-	pdf_set_font(pdf, "Calibri");
+	//pdf_set_font(pdf, "Calibri");
     pdf_add_text_wrap(
         pdf, NULL,
         "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["
