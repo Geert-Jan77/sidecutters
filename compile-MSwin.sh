@@ -7,12 +7,10 @@ echo "Document folder ${docs}"
 desktop=$(reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" | grep Desktop | awk '{print $3}')
 desktop="${desktop//\\//}"
 desktop="${desktop/C/c}"
-
 echo "Desktop folder ${desktop}"
 pictures=$(reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" | grep 'My Pictures' | awk '{print $4}')
 pictures="${pictures//\\//}"
 pictures="${pictures/C/c}"  
-
 echo "Pictures ${pictures}"
 secondString="Downloads"
 downloads="${desktop/Desktop/"$secondString"}"  
@@ -37,7 +35,6 @@ workdir=$(pwd -W)
 workdir="${workdir//\\//}"
 workdir="${workdir/C/c}"
 workdir="${workdir/D/d}"
-
 sed -i "s|workingdirectory|${workdir}|" ${filename}
 if [ -d "c:/Program Files" ]; then sed -i "s|appfolder|c:/Program Files|" ${filename}
 fi
