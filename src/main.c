@@ -3,6 +3,60 @@
 #include <locale.h>
 #include "testpdf.c"
 
+static char *sFromConf(char *KeytoFind )
+{
+    char *ValueFound;
+    char c;
+    FILE *fp2;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    fp2 = fopen("config", "r");
+    if (fp2 == NULL)
+    {
+        g_print("Error file not found.\n");
+    }
+    while ((read = getline(&line, &len, fp2)) != -1)
+    {
+        char *word = " = ";
+        char *pch = strstr(line, word);
+        if(pch)
+        {
+            size_t leng = pch - line;
+            char *key = malloc(leng);
+            if (key)
+            {
+                for(int i = 0; i < pch - line; i++)
+                {
+                    key[i] = *(line + i);
+                }
+                key[leng] = '\0';
+                size_t leng2 = read + (size_t)(line - pch) - 4;
+                char *value = malloc(leng2);
+                if(value)
+                {
+                    int iStart = pch - line + 3;
+                    for(int i = iStart; i < iStart + leng2; i++)
+                    {
+                        value[i - iStart] = *(line + i);
+                    }
+                    value[leng2] = '\0';
+                    if (strcmp(KeytoFind,key)==0)
+                    {
+                        ValueFound = value;
+                    }
+                }
+            }
+        }
+    }
+    fclose(fp2);
+    if (line)
+    {
+        free(line);
+    }
+    return ValueFound;
+}
+
 // menu 
 void show_message_cb (GtkMenuItem *item, gpointer user_data) 
 {
@@ -19,10 +73,15 @@ void show_uri_cb (GtkMenuItem *item, gpointer user_data)
 
 void export_pdf_cb (GtkMenuItem *item, gpointer user_data) 
 {
-	char* arg[] = {"exportpdf.pdf", "rsc/side cutters.jpg" };
+    char* sRes = sFromConf("Resource");
+    char* sPicturefile = malloc(strlen(sRes) + strlen("side cutters.jpg") + 1);
+    strcpy(sPicturefile, sRes);
+    strcat(sPicturefile, "side cutters.jpg");
+    char* sPdfFile = sFromConf("Filetest");
+	char* arg[] = {sPdfFile, sPicturefile };
 	int iRet = testpdf(arg);
 	GtkWidget *dialog ;
-    if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The bookmarked printable data file 'testpdf.pdf' was exported." );
+    if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The bookmarked portable data file was exported." );
     gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy( GTK_WIDGET(dialog) );
@@ -66,8 +125,10 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 }
 static void bPolyline_clicked(GtkWidget *button)
 {
-    FILE * fp2;
-    char * line = NULL;
+    
+    char c;
+    FILE *fp2;
+    char *line = NULL;
     size_t len = 0;
     ssize_t read;
     fp2 = fopen("config", "r");
@@ -82,16 +143,30 @@ static void bPolyline_clicked(GtkWidget *button)
         char *pch = strstr(line, word);
         if(pch)
         {
-            for(int i = 0; i < pch - line; i++)
+            size_t leng = pch - line;
+            char *key = malloc(leng);
+            if (key)
             {
-                g_print("%c",*(line + i));
+                for(int i = 0; i < pch - line; i++)
+                {
+                    key[i] = *(line + i);
+                }
+                key[leng] = '\0';
+                g_print("%s, ", key);
+                size_t leng2 = read + (size_t)(line - pch) - 4;
+                char *value = malloc(leng2);
+                if(value)
+                {
+                    int iStart = pch - line + 3;
+                    for(int i = iStart; i < iStart + leng2; i++)
+                    {
+                        value[i - iStart] = *(line + i);
+                    }
+                    value[leng2] = '\0';
+                    g_print("%s", value);
+                    g_print("\n");
+                }
             }
-            g_print(", ");
-            for(int i = pch - line + 3; i < (int)read - 1; i++)
-            {
-                g_print("%c",*(line + i));
-            }
-            g_print("\n");
         }
     }
     fclose(fp2);
@@ -99,14 +174,16 @@ static void bPolyline_clicked(GtkWidget *button)
     {
         free(line);
     }
+     
 }
 
 static void bExportpdf_clicked(GtkWidget *button)
 {
+    /*
     float val;
     FILE *fp1;
     fp1 = fopen("config", "w");
-    fprintf(fp1, "Pi = %.7f\n", 3.141592653589f); // try to read with scanf
+    fprintf(fp1, "Pi = %f\n", 3.141592653589f); // try to read with scanf
     fprintf(fp1, "Resource = rsc/\n");
     fprintf(fp1, "Filetest = testpdf.pdf\n");
     fprintf(fp1, "Working = workingdirectory\n");
@@ -117,11 +194,12 @@ static void bExportpdf_clicked(GtkWidget *button)
     fprintf(fp1, "Downloads = downloadfolder\n");
     fprintf(fp1, "Thrash = thrashfolder\n");
     fclose(fp1);
+     */
 }
 
 int main(int argc, char *argv[] )
 {
-	setlocale(LC_ALL, "C");
+	setlocale(LC_NUMERIC, "C");
 	
 	// main window
 	GtkWidget *window;
@@ -134,7 +212,11 @@ int main(int argc, char *argv[] )
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height );
 	
 	// icon
-	icon = create_pixbuf("rsc/icon.png" ); 
+    char *sRes = sFromConf("Resource");
+    char *sIconfile = malloc(strlen(sRes) + strlen("icon.png") + 1);
+    strcpy(sIconfile, sRes);
+    strcat(sIconfile, "icon.png");
+	icon = create_pixbuf(sIconfile );
 	gtk_window_set_icon(GTK_WINDOW(window), icon );
 	
 	// menu
@@ -173,11 +255,26 @@ int main(int argc, char *argv[] )
 	
 	// buttons
 	struct Icons icons;
-	icons.line = gtk_image_new_from_file("rsc/line.xpm" );
-	icons.polyline = gtk_image_new_from_file("rsc/polyline.xpm" );
-	icons.polygon = gtk_image_new_from_file("rsc/polygon.xpm" );
-	icons.exportpdf = gtk_image_new_from_file("rsc/exportpdf.xpm" );
-	icons.exportdxf = gtk_image_new_from_file("rsc/exportdxf.xpm" );
+    char *sLinefile = malloc(strlen(sRes) + strlen("line.xpm") + 1);
+    char *sPolylinefile = malloc(strlen(sRes) + strlen("polyline.xpm") + 1);
+    char *sPolygonfile = malloc(strlen(sRes) + strlen("polygon.xpm") + 1);
+    char *sExportpdffile = malloc(strlen(sRes) + strlen("exportpdf.xpm") + 1);
+    char *sExportdxffile = malloc(strlen(sRes) + strlen("exportdxf.xpm") + 1);
+    strcpy(sLinefile, sRes);
+    strcat(sLinefile, "line.xpm");
+    strcpy(sPolylinefile, sRes);
+    strcat(sPolylinefile, "polyline.xpm");
+    strcpy(sPolygonfile, sRes);
+    strcat(sPolygonfile, "polygon.xpm");
+    strcpy(sExportpdffile, sRes);
+    strcat(sExportpdffile, "exportpdf.xpm");
+    strcpy(sExportdxffile, sRes);
+    strcat(sExportdxffile, "exportdxf.xpm");
+	icons.line = gtk_image_new_from_file(sLinefile );
+	icons.polyline = gtk_image_new_from_file(sPolylinefile );
+	icons.polygon = gtk_image_new_from_file(sPolygonfile );
+	icons.exportpdf = gtk_image_new_from_file(sExportpdffile );
+	icons.exportdxf = gtk_image_new_from_file(sExportdxffile );
 	g_object_ref_sink(icons.line );
 	g_object_ref_sink(icons.polyline );
 	g_object_ref_sink(icons.polygon );
