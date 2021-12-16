@@ -5,7 +5,16 @@ if [ -d "~/.Trash" ]; then thrash="~/.Trash"
 fi
 mkdir "Side Cutters.app/Contents/MacOS"
 cp -R rsc "Side Cutters.app/Contents/Resources"
-filename="src/config"
+filename="src/main_.c"
+cp "src/main.c" $filename
+search="config"
+replace=$(pwd)
+echo "I'm going to replace '${search}' with '${replace}/Side Cutters.app/Contents/MacOS/config_' in '${filename}'"
+if [[ $search != "" && $replace != "" ]]; then
+    sed -i "" "s|${search}|${replace}/Side Cutters.app/Contents/MacOS/config_|" $filename
+fi
+filename="src/config_"
+cp "src/config" $filename
 search="rsc/"
 replace=$(pwd)
 echo "I'm going to replace '${search}' with '${replace}/Side Cutters.app/Contents/Resources/rsc/' in '${filename}'"
@@ -14,8 +23,8 @@ if [[ $search != "" && $replace != "" ]]; then
     sed -i "" "s|${search}|${replace}/Side Cutters.app/Contents/Resources/rsc/|" $filename
     sed -i "" "s|testpdf.pdf|${replace}/testpdf.pdf|" $filename
 fi
-cp $filename "Side Cutters.app/Contents/MacOS/config"
-gcc src/main.c -o "Side Cutters.app/Contents/MacOS/Side-Cutters" `pkg-config --cflags --libs gtk+-3.0`
+cp $filename "Side Cutters.app/Contents/MacOS/config_"
+gcc src/main_.c -o "Side Cutters.app/Contents/MacOS/Side-Cutters" `pkg-config --cflags --libs gtk+-3.0`
 chmod +x "Side Cutters.app"
 echo Run: Double click 'Side Cutters.app' - Apple MacOS application
 echo Press any key. 
