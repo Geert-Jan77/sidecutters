@@ -1,0 +1,10 @@
+Pi = 3,1415927
+Resource = rsc/
+Filetest = testpdf.pdf
+Working = workingdirectory
+Documents = documentfolder
+Apps = appfolder
+Pictures = picturefolder
+Desktop = desktopfolder
+Downloads = downloadfolder
+Thrash = thrashfolder

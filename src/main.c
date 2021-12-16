@@ -66,17 +66,57 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 }
 static void bPolyline_clicked(GtkWidget *button)
 {
-	setlocale(LC_ALL, "Dutch_Netherlands.1252"); // ".OCP" if you want to use system settings
-	FILE *fp1;  
-	fp1 = fopen("file.txt", "w");//opening file  
-	fprintf(fp1, "Locale Dutch_Netherlands.1252 A float should include a dot; not a comma. Pi = %f\n", 3.141592653589f); //writing data into file  
-	fprintf(fp1, "/MediaBox [0 0 %f %f]\n", 3.141592653589f, 3.141592653589f);
-	fprintf(fp1, "FilePrint, a float should include a dot; not a comma! Pi = %.6f\n", 3.141592653589f); //writing data into file  
-	fprintf(fp1, "/MediaBox [0 0 %.6f %.6f]\n", 3.141592653589f, 3.141592653589f);
-	setlocale(LC_ALL, "C");
-	fprintf(fp1, "Locale C A float should include a dot; not a comma. Pi = %f\n", 3.141592653589f); //writing data into file  
-	fprintf(fp1, "/MediaBox [0 0 %f %f]\n", 3.141592653589f, 3.141592653589f);
-	fclose(fp1);//closing file  
+    FILE * fp2;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    fp2 = fopen("config", "r");
+    if (fp2 == NULL)
+    {
+        g_print("Error file not found.\n");
+    }
+    g_print("Key, Value\n");
+    while ((read = getline(&line, &len, fp2)) != -1)
+    {
+        char *word = " = ";
+        char *pch = strstr(line, word);
+        if(pch)
+        {
+            for(int i = 0; i < pch - line; i++)
+            {
+                g_print("%c",*(line + i));
+            }
+            g_print(", ");
+            for(int i = pch - line + 3; i < (int)read - 1; i++)
+            {
+                g_print("%c",*(line + i));
+            }
+            g_print("\n");
+        }
+    }
+    fclose(fp2);
+    if (line)
+    {
+        free(line);
+    }
+}
+
+static void bExportpdf_clicked(GtkWidget *button)
+{
+    float val;
+    FILE *fp1;
+    fp1 = fopen("config", "w");
+    fprintf(fp1, "Pi = %.7f\n", 3.141592653589f); // try to read with scanf
+    fprintf(fp1, "Resource = rsc/\n");
+    fprintf(fp1, "Filetest = testpdf.pdf\n");
+    fprintf(fp1, "Working = workingdirectory\n");
+    fprintf(fp1, "Documents = documentfolder\n");
+    fprintf(fp1, "Apps = appfolder\n");
+    fprintf(fp1, "Pictures = picturefolder\n");
+    fprintf(fp1, "Desktop = desktopfolder\n");
+    fprintf(fp1, "Downloads = downloadfolder\n");
+    fprintf(fp1, "Thrash = thrashfolder\n");
+    fclose(fp1);
 }
 
 int main(int argc, char *argv[] )
@@ -180,13 +220,14 @@ int main(int argc, char *argv[] )
 	gtk_box_pack_start (GTK_BOX(hbox), bExportpdf, FALSE, FALSE, 0);
 	gchar *lExportpdf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Export Pdf</span>";
 	gtk_widget_set_tooltip_markup(bExportpdf, lExportpdf);
-	gtk_widget_show(bExportpdf );
+	g_signal_connect(bExportpdf, "clicked", G_CALLBACK(bExportpdf_clicked ), NULL );
+    gtk_widget_show(bExportpdf );
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bExportdxf, FALSE, FALSE, 0);
 	gchar *lExportdxf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Export Dxf</span>";
 	gtk_widget_set_tooltip_markup(bExportdxf, lExportdxf);
 	gtk_widget_show(bExportdxf );
-	g_signal_connect(bExportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
+    g_signal_connect(bExportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
 	
 	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	gtk_widget_show(window );
