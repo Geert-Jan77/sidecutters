@@ -30,7 +30,7 @@ fi
 done
 trash="${trash//\\//}"
 echo "Trash ${trash}"
-filename="src/config_"
+filename="config"
 cp "src/config" ${filename}
 sed -i "s|trashfolder|${trash}|" ${filename}
 workdir=$(pwd -W)
