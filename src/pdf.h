@@ -1,11 +1,8 @@
-/**
- * Simple engine for creating PDF files.
- * It supports text, shapes, images etc...
- * Capable of handling millions of objects without too much performance
- * penalty.
- * Public domain license - no warrenty implied; use at your own risk.
- * @file pdfgen.h
- */
+/*
+
+https://github.com/AndreRenaud/PDFGen
+ 
+*/
 #ifndef PDFGEN_H
 #define PDFGEN_H
 
