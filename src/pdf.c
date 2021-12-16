@@ -1,3 +1,9 @@
+/*
+                 https://github.com/AndreRenaud/PDFGen
+                 https://github.com/Geert-Jan77/sidecutters/ 
+                 Comma's were printed by MacOs method fprintf(" %f ", 1.23f) => 1,23
+		 This resulted in a damaged pdf file. They were replaced by dots in this pdf.c
+*/
 #define MAX_LEN 256
 #if defined(_MSC_VER)
 #define _CRT_SECURE_NO_WARNINGS 1 
