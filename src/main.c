@@ -1,28 +1,40 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "testpdf.c"
+#define MAX_LEN 256
 
 static char *sFromConf(char *KeytoFind )
 {
     char *ValueFound;
     char c;
     FILE *fp2;
-    char *line = NULL;
+    //char *line = NULL;
     size_t len = 0;
+	char buffer[MAX_LEN];
     ssize_t read;
     fp2 = fopen("config", "r");
     if (fp2 == NULL)
     {
         g_print("Error file not found.\n");
+		return "Error file not found.\n";
     }
-    while ((read = getline(&line, &len, fp2)) != -1)
+	//while ((read = getline(&line, &len, fp2)) != -1)
+    while (fgets(buffer, MAX_LEN, fp2))
     {
-        char *word = " = ";
+		read = strcspn(buffer, "\n");
+        buffer[read + 1] = 0;
+		g_print("read = %d\n", read);
+		char *line = buffer;
+        g_print("line %s\n", line);
+		char *word = " = ";
         char *pch = strstr(line, word);
         if(pch)
         {
+			g_print("strstr success \n");
             size_t leng = pch - line;
-            char *key = malloc(leng);
+            char *key = malloc(leng + 1);
             if (key)
             {
                 for(int i = 0; i < pch - line; i++)
@@ -30,8 +42,8 @@ static char *sFromConf(char *KeytoFind )
                     key[i] = *(line + i);
                 }
                 key[leng] = '\0';
-                size_t leng2 = read + (size_t)(line - pch) - 4;
-                char *value = malloc(leng2);
+                size_t leng2 = read + (size_t)(line - pch) - 3;
+                char *value = malloc(leng2 + 1);
                 if(value)
                 {
                     int iStart = pch - line + 3;
@@ -49,10 +61,6 @@ static char *sFromConf(char *KeytoFind )
         }
     }
     fclose(fp2);
-    if (line)
-    {
-        free(line);
-    }
     return ValueFound;
 }
 
@@ -124,10 +132,9 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 }
 static void bPolyline_clicked(GtkWidget *button)
 {
-    
     char c;
     FILE *fp2;
-    char *line = NULL;
+	char buffer[MAX_LEN];
     size_t len = 0;
     ssize_t read;
     fp2 = fopen("config", "r");
@@ -136,14 +143,20 @@ static void bPolyline_clicked(GtkWidget *button)
         g_print("Error file not found.\n");
     }
     g_print("Key, Value\n");
-    while ((read = getline(&line, &len, fp2)) != -1)
+    //while ((read = getline(&line, &len, fp2)) != -1)
+	while (fgets(buffer, MAX_LEN, fp2))
     {
-        char *word = " = ";
+		read = strcspn(buffer, "\n");
+        buffer[read+1] = 0;
+		g_print("read = %d\n", read);
+		char *line = buffer;
+        g_print("line %s\n", line);
+		char *word = " = ";
         char *pch = strstr(line, word);
         if(pch)
         {
             size_t leng = pch - line;
-            char *key = malloc(leng);
+            char *key = malloc(leng + 1);
             if (key)
             {
                 for(int i = 0; i < pch - line; i++)
@@ -152,8 +165,8 @@ static void bPolyline_clicked(GtkWidget *button)
                 }
                 key[leng] = '\0';
                 g_print("%s, ", key);
-                size_t leng2 = read + (size_t)(line - pch) - 4;
-                char *value = malloc(leng2);
+                size_t leng2 = read + (size_t)(line - pch) - 3;
+                char *value = malloc(leng2 + 1);
                 if(value)
                 {
                     int iStart = pch - line + 3;
@@ -167,11 +180,6 @@ static void bPolyline_clicked(GtkWidget *button)
                 }
             }
         }
-    }
-    fclose(fp2);
-    if (line)
-    {
-        free(line);
     }
 }
 
@@ -215,9 +223,11 @@ int main(int argc, char *argv[] )
 	
 	// icon
     char *sRes = sFromConf("Resource");
+	g_print("sFromConf =%s \n" ,sRes);
     char *sIconfile = malloc(strlen(sRes) + strlen("icon.png") + 1);
     strcpy(sIconfile, sRes);
     strcat(sIconfile, "icon.png");
+	g_print("%s \n" ,sIconfile);
 	icon = create_pixbuf(sIconfile );
 	gtk_window_set_icon(GTK_WINDOW(window), icon );
 	
