@@ -2,15 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cairo.h>
+#include <cairo-pdf.h>
 #include "testpdf.c"
+#include "testcairo.c"
 #define MAX_LEN 256
 
 static char *sFromConf(char *KeytoFind )
 {
+	// read config file key-value strings
     char *ValueFound;
     char c;
     FILE *fp2;
-    //char *line = NULL;
     size_t len = 0;
 	char buffer[MAX_LEN];
     ssize_t read;
@@ -20,19 +23,18 @@ static char *sFromConf(char *KeytoFind )
         g_print("Error file not found.\n");
 		return "Error file not found.\n";
     }
-	//while ((read = getline(&line, &len, fp2)) != -1)
     while (fgets(buffer, MAX_LEN, fp2))
     {
 		read = strcspn(buffer, "\n");
         buffer[read + 1] = 0;
-		g_print("read = %d\n", read);
+		//g_print("read = %d\n", read);
 		char *line = buffer;
-        g_print("line %s\n", line);
+        //g_print("line %s\n", line);
 		char *word = " = ";
         char *pch = strstr(line, word);
         if(pch)
         {
-			g_print("strstr success \n");
+			//g_print("strstr success \n");
             size_t leng = pch - line;
             char *key = malloc(leng + 1);
             if (key)
@@ -172,9 +174,12 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line0 );
+	//testcairo(0,NULL);
+	testcairo();
 }
 static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 {
+	// Read Config file to debug window
 	static gboolean bPolyline = FALSE;
 	bPolyline = !bPolyline;
 	if (bPolyline)
@@ -241,7 +246,39 @@ static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 		gtk_button_set_image(GTK_BUTTON(button), icons -> exportpdf );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> exportpdf0 );
+
+	char* sRes = sFromConf("Resource");
+    char* sPicturefile = malloc(strlen(sRes) + strlen("side cutters.jpg") + 1);
+    strcpy(sPicturefile, sRes);
+    strcat(sPicturefile, "side cutters.jpg");
+    char* sPdfFile = sFromConf("Filetest");
+	char* arg[] = {sPdfFile, sPicturefile };
+	//int iRet = testpdf(arg);
+	int iRet = 0;
+	cairo_surface_t *surface;
+	cairo_t *cr;
+	surface = cairo_pdf_surface_create(sPdfFile, 504, 648);
+	cr = cairo_create(surface);
+	
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_select_font_face (cr, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	cairo_set_font_size (cr, 14.17f);
+	cairo_move_to(cr, 10.0, 50.0);
+	cairo_show_text(cr, "5 mm Calibri lettertype.");  
+	cairo_set_font_size (cr, 28.34f);
+	cairo_move_to(cr, 10.0, 50.0f + 14.17f + 28.34f);
+	cairo_show_text(cr, "10 mm Calibri lettertype.");  
+	
+	cairo_show_page(cr);
+	cairo_surface_destroy(surface);
+	cairo_destroy(cr);
+	GtkWidget *dialog ;
+    if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The cairo portable data file was exported." );
+    gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy( GTK_WIDGET(dialog) );
     /*
+	  save config file
     float val;
     FILE *fp1;
     fp1 = fopen("config", "w");
@@ -275,39 +312,48 @@ static void bImportdxf_clicked(GtkWidget *button, struct Icons *icons)
     
 }
 
+static void bText_clicked(GtkWidget *button, struct Icons *icons)
+{
+	static gboolean bText = FALSE;
+	bText = !bText;
+	if (bText)
+		gtk_button_set_image(GTK_BUTTON(button), icons -> text );
+	else
+		gtk_button_set_image(GTK_BUTTON(button), icons -> text0 );
+}
+
 int main(int argc, char *argv[] )
 {
-
 	// main window
 	GtkWidget *window;
 	GdkPixbuf *icon;
 	gtk_init(&argc, &argv );
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL );
-	gtk_window_set_title(GTK_WINDOW(window), "Side Cutters" );
 	GdkRectangle workarea = {0 };
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea );
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height );
+	gtk_window_set_title(GTK_WINDOW(window), "Side Cutters" );
 	
 	// icon
     char *sRes = sFromConf("Resource");
-	g_print("sFromConf =%s \n" ,sRes);
+	//g_print("sFromConf =%s \n" ,sRes);
     char *sIconfile = malloc(strlen(sRes) + strlen("icon.png") + 1);
     strcpy(sIconfile, sRes);
     strcat(sIconfile, "icon.png");
-	g_print("%s \n" ,sIconfile);
+	//g_print("%s \n" ,sIconfile);
 	icon = create_pixbuf(sIconfile );
 	gtk_window_set_icon(GTK_WINDOW(window), icon );
 	
 	// menu
 	GtkWidget *center_vbox;
-    GtkWidget *menuBar;
+	GtkWidget *menuBar;
     GtkWidget *menuItem1, *menuItem2;
     GtkWidget *submenu1, *submenu2;
     GtkWidget *item_message;
 	GtkWidget *item_export_pdf;
     GtkWidget *item_quit;
 	GtkWidget *item_opensource;
-    center_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	center_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     menuBar =gtk_menu_bar_new ();
     menuItem1 = gtk_menu_item_new_with_mnemonic ("_Application");
 	submenu1 = gtk_menu_new ();
@@ -679,7 +725,6 @@ int main(int argc, char *argv[] )
 	GtkWidget *hbox2;
     hbox2 = gtk_box_new (TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox2 );
-	
 	gtk_box_pack_start (GTK_BOX(hbox), bLine, FALSE, FALSE, 0);
 	gchar *lLine = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
 	gtk_widget_set_tooltip_markup(bLine, lLine);
@@ -741,6 +786,7 @@ int main(int argc, char *argv[] )
 	gchar *lText = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Text</span>";
 	gtk_widget_set_tooltip_markup(bText, lText);
 	gtk_widget_show(bText );
+	g_signal_connect(bText, "clicked", G_CALLBACK(bText_clicked ), &icons);
 	
 	gtk_box_pack_start (GTK_BOX(hbox), bImage, FALSE, FALSE, 0);
 	gchar *lImage = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Image</span>";
@@ -802,7 +848,9 @@ int main(int argc, char *argv[] )
 	
 	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	gtk_widget_show(window );
-	gtk_widget_show_all(window );
+	gtk_widget_show_all((GtkWidget*)window );
+	testcairo();
+
 	g_signal_connect(G_OBJECT(window ), "destroy", G_CALLBACK(gtk_main_quit ), NULL );
 	g_object_unref(icon ); 	
 	gtk_main();
