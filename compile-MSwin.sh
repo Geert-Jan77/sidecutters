@@ -15,7 +15,6 @@ echo "Pictures ${pictures}"
 secondString="Downloads"
 downloads="${desktop/Desktop/"$secondString"}"  
 echo "Downloads ${downloads}"
-#wmic useraccount get sid | awk '{print $0}'
 sids=$(wmic useraccount get sid | awk '{print $0}')
 dollar="$"
 for f in $sids; 
