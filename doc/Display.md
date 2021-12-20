@@ -1,6 +1,6 @@
 # Display
 
-The aim of this document is displaying all items real size on the monitor, scale 1:1 We define the vertical resolution in pixels per mm and the horizontal resolution in pixels per mm. Possible choices for the display depend on the pixel width and height.
+The aim of this document is displaying all items real size on the monitor, scale 1:1 We define the resolution in pixels per mm. Possible choices for the display depend on the pixel width and height.
 
 | Display Diagonal (inch) | Display width (pixel) | Display height (pixel) | Display width (mm) | Display height (mm) | Resolution (pixel/mm) | Ratio |
 |-------------------------|-----------------------|------------------------|--------------------|---------------------|-----------------------|-------|
