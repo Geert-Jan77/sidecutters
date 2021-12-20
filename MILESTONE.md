@@ -19,6 +19,6 @@
 | 21 April 2022     | Add drawing templates for all defined rail-mounted electric devices *doc/Drawdevices.md*                        |
 | 7 May 2022        | Create *Side Cutters Project* - device list                                                                     |
 | 21 May 2022       | Create *Side Cutters Project* - device connect table                                                            |
-| 4 Jun 2022        | 45th Birthday of Geert-Jan - define a donation request *doc/Amazing-tips-to-ask-for-donations.md* and ask in a non-pressing way for a voluntary donation without loss of functionality in the software |
+| 4 Jun 2022        | Define a donation request *doc/Amazing-tips-to-ask-for-donations.md* without loss of functionality in the free software |
 | 5 Jun 2022        | Create *Side Cutters Project* - auto-generate electrical drawing by pressing the *Side Cutters* button          | 
 
