@@ -16,6 +16,7 @@
 | 7 March 2022      | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
 | 21 March 2022     | Draw all objects on Pdf surface                                                                                 |
 | 7 April 2022      | Import Dxf drawing                                                                                              |
+| 14 April 2022     | Define Scp Project file *doc/Projectfile.md* with sections device list, connection table, pages                 |
 | 21 April 2022     | Add drawing templates for all defined rail-mounted electric devices *doc/Drawdevices.md*                        |
 | 7 May 2022        | Create *Side Cutters Project* - device list                                                                     |
 | 21 May 2022       | Create *Side Cutters Project* - device connect table                                                            |
