@@ -13,7 +13,6 @@ gint iCairox, iCairoy;
 gboolean bCairoinitialized=FALSE;
 gboolean bCairoshown=FALSE;
 
-
 gboolean callback_minimize(GtkWidget *widget, GdkEventWindowState *event, gpointer user_data)
 {
     if(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED)
@@ -27,7 +26,6 @@ gboolean callback_minimize(GtkWidget *widget, GdkEventWindowState *event, gpoint
 return TRUE;
 }
 
-
 void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data ) 
 {
 	gint wix, wiy;
@@ -35,8 +33,8 @@ void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data )
 	g_print("%s x %d y %d width %d height %d \n", data, allocation->x + wix, allocation->y + wiy, allocation->width, allocation->height);
 	iCairox = allocation->x + wix + allocation->width;
 	iCairoy = allocation->y + wiy;
+	if (!bCairoinitialized) testcairo(iCairox,iCairoy);
 	bCairoinitialized = TRUE;
-	testcairo(iCairox,iCairoy);
 	bCairoshown = TRUE;
 }
 
@@ -217,8 +215,8 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line0 );
-	testcairo(iCairox,iCairoy);
 }
+
 static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 {
 	// Read Config file to debug window
@@ -245,9 +243,9 @@ static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
     {
 		read = strcspn(buffer, "\n");
         buffer[read+1] = 0;
-		g_print("read = %d\n", read);
+		//g_print("read = %d\n", read);
 		char *line = buffer;
-        g_print("line %s\n", line);
+        //g_print("line %s\n", line);
 		char *word = " = ";
         char *pch = strstr(line, word);
         if(pch)
