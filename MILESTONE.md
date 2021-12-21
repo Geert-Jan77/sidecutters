@@ -14,6 +14,7 @@
 | 7 Februari 2022   | The windows Taskbar is excluded from Side Cutters window                                                        |
 | 21 Februari 2022  | Display calibration is available for all known monitor sizes *doc/Display.md*                                   |
 | 7 March 2022      | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
+| 14 March 2022     | Show the Graphical user interface scaled on all known monitor sizes                                             |
 | 21 March 2022     | Draw all objects on Pdf surface                                                                                 |
 | 7 April 2022      | Import Dxf drawing                                                                                              |
 | 14 April 2022     | Define Scp Project file *doc/Projectfile.md* with sections device list, connection table, pages                 |
