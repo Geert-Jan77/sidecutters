@@ -745,7 +745,7 @@ int main(int argc, char *argv[] )
 	frame = gtk_frame_new (NULL);
 	gtk_box_pack_start (GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 	drawing_area = gtk_drawing_area_new ();
-	gtk_widget_set_size_request (drawing_area, (gint)(307.0 * PPMM), (gint)(215.0 * PPMM) );
+	gtk_widget_set_size_request (drawing_area, (gint)(320.0 * PPMM), (gint)(230.0 * PPMM) );
 	gtk_container_add (GTK_CONTAINER(frame), drawing_area);
 	g_signal_connect(G_OBJECT(frame), "draw", G_CALLBACK(on_draw_event), NULL);
 	g_signal_connect(G_OBJECT(window), "motion-notify-event", G_CALLBACK (mouse_moved), NULL);
