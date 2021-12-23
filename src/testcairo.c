@@ -3,16 +3,17 @@
 #include <stdlib.h>
 #define MM 2.834646f        // 1 pt = 2.83 mm
 #define PPMM 3.55f          // Monitor resolution, platform dependent
-#define FSCALE 1.426024f    // Fontscaling, platform dependent
+#define FSCALE 1.426024f    // Fontscaling
 
 char label[MAX_LEN ];
 int x, y = 0;  
 static void do_drawing(cairo_t *);
 static void do_drawing2(cairo_t *);
 int hidecairo();
-GtkWidget *window2;
+int showcairo();
 gboolean bTransparency = FALSE;
 float alpha = 0.0;
+gint iWindowx, iWindowy;
 
 static void tran_setup(GtkWidget *win)
 {        
@@ -42,7 +43,9 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
         GdkEventMotion* e=(GdkEventMotion*)event;
 		x = (guint)e->x;
 		y = (guint)e->y;
-		int j1 = snprintf(label, MAX_LEN, "Coordinates: (%u,%u)", x, y);
+		gint xn = (gint) x - iWindowx;
+		gint yn = (gint) y - iWindowy;
+		int j1 = snprintf(label, MAX_LEN, "Coordinates: (%.1f mm,%.1f mm)", (float)xn / PPMM - 5.0 , 215.0 - (float)yn / PPMM );
 		gtk_widget_queue_draw(widget);
     }
 	return FALSE;
@@ -208,51 +211,26 @@ static void do_drawing2(cairo_t *Cairo)
 	cairo_stroke(Cairo);
 }
 
-int testcairo(int iCairox, int iCairoy)
+int hidecairo(GtkWidget *cairowindow)
 {
-	//GtkWidget *window2;
-	GtkWidget *darea;
-	window2 = gtk_window_new(GTK_WINDOW_POPUP );
-	GdkRectangle workarea = {0 };
-	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea );
-	darea = gtk_drawing_area_new();
-	gtk_container_add(GTK_CONTAINER(window2), darea);
-	g_signal_connect(G_OBJECT(darea), "draw", G_CALLBACK(on_draw_event), NULL);
-	g_signal_connect(G_OBJECT(darea), "motion-notify-event", G_CALLBACK (mouse_moved), NULL);
-	gtk_widget_set_events(darea, GDK_POINTER_MOTION_MASK);
-	GdkGeometry windowProperties;
-	windowProperties.min_width = workarea.width - 140;
-	windowProperties.min_height = workarea.height - 200;
-	windowProperties.max_width = workarea.width;
-	windowProperties.max_height = workarea.height;
-	gtk_window_set_geometry_hints(GTK_WINDOW(window2), NULL, &windowProperties, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE);	
-	gtk_window_set_default_size (GTK_WINDOW (window2), workarea.width - 112 - 8, workarea.height - 154 );
-	gtk_window_move (GTK_WINDOW(window2), iCairox, iCairoy);
-	gtk_widget_show_all(window2);
-	return 0;
-}
-int hidecairo()
-{
-	g_print("Hide Cairo\n");
-	gtk_widget_hide (window2);
+	gtk_widget_hide (cairowindow);
 	return 0;
 }
 
-int showcairo()
+int showcairo(GtkWidget *cairowindow)
 {
-	g_print("Show Cairo\n");
-	gtk_widget_show_all (window2);
+	gtk_widget_show_all (cairowindow);
 	return 0;
 }
 
-int animate()
+int animate(GtkWidget *cairowindow)
 {
 	alpha = 0.0;
-	gtk_widget_queue_draw(window2);
+	gtk_widget_queue_draw(cairowindow);
 	g_print("Animate");
 	//change tranperancy
 	bTransparency=TRUE;
-	tran_setup(window2); //Transparency -> no coordinates are shown. 
+	tran_setup(cairowindow); //Transparency -> no coordinates are shown. 
 	
 	return 0;
 }

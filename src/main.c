@@ -7,35 +7,25 @@
 #include "testpdf.c"
 #include "testcairo.c"
 #define MAX_LEN 256
+#define PPMM 3.55f          // Monitor resolution, platform dependent
 
-gint iWindowx, iWindowy;
-gint iCairox, iCairoy;
-gboolean bCairoinitialized=FALSE;
-gboolean bCairoshown=FALSE;
-
-gboolean callback_minimize(GtkWidget *widget, GdkEventWindowState *event, gpointer user_data)
-{
-    if(event->new_window_state & GDK_WINDOW_STATE_ICONIFIED)
-	{
-		if (bCairoinitialized && bCairoshown) {hidecairo(); bCairoshown = FALSE;}
-	}
-	if(event->new_window_state & GDK_WINDOW_STATE_FOCUSED)
-	{	
-		if (bCairoinitialized && !bCairoshown) {showcairo(); bCairoshown = TRUE; }
-	}	
-return TRUE;
-}
+gboolean bCairoinitialized = FALSE;
+gboolean bCairoshown = FALSE;
+GtkWidget *window;
+GtkWidget *frame;
 
 void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data ) 
 {
 	gint wix, wiy;
 	gdk_window_get_origin (gtk_widget_get_window (widget), &wix, &wiy);
-	g_print("%s x %d y %d width %d height %d \n", data, allocation->x + wix, allocation->y + wiy, allocation->width, allocation->height);
-	iCairox = allocation->x + wix + allocation->width;
-	iCairoy = allocation->y + wiy;
-	if (!bCairoinitialized) testcairo(iCairox,iCairoy);
-	bCairoinitialized = TRUE;
-	bCairoshown = TRUE;
+	if (!bCairoinitialized) 
+	{
+		g_print("Relative to client %s x %d y %d width %d height %d \n", data, allocation->x, allocation->y, allocation->width, allocation->height);
+		g_print("Absolute coords %s x %d y %d width %d height %d \n", data, allocation->x + wix, allocation->y + wiy, allocation->width, allocation->height);
+		bCairoinitialized = TRUE;
+		iWindowx = allocation->x + allocation->width;
+		iWindowy = allocation->y;
+	}
 }
 
 static char *sFromConf(char *KeytoFind )
@@ -116,13 +106,11 @@ void export_pdf_cb (GtkMenuItem *item, gpointer user_data)
     char* sPdfFile = sFromConf("Filetest");
 	char* arg[] = {sPdfFile, sPicturefile };
 	int iRet = testpdf(arg);
-	/* This dialogue is displayed under the cairo drawing
 	GtkWidget *dialog ;
     if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The bookmarked portable data file was exported." );
     gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy( GTK_WIDGET(dialog) );
-	*/
 }
 
 // icon
@@ -204,7 +192,7 @@ static void bImage_clicked(GtkWidget *button, struct Icons *icons )
 		gtk_button_set_image(GTK_BUTTON(button), icons -> image );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> image0 );
-	animate();
+	animate(frame);
 }
 
 static void bLine_clicked(GtkWidget *button, struct Icons *icons )
@@ -238,14 +226,11 @@ static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
         g_print("Error file not found.\n");
     }
     g_print("Key, Value\n");
-    //while ((read = getline(&line, &len, fp2)) != -1)
 	while (fgets(buffer, MAX_LEN, fp2))
     {
 		read = strcspn(buffer, "\n");
         buffer[read+1] = 0;
-		//g_print("read = %d\n", read);
 		char *line = buffer;
-        //g_print("line %s\n", line);
 		char *word = " = ";
         char *pch = strstr(line, word);
         if(pch)
@@ -280,13 +265,13 @@ static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 
 static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 {
+	// export pdf with cairo
 	static gboolean bExportpdf = FALSE;
 	bExportpdf = !bExportpdf;
 	if (bExportpdf)
 		gtk_button_set_image(GTK_BUTTON(button), icons -> exportpdf );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> exportpdf0 );
-
 	char* sRes = sFromConf("Resource");
     char* sPicturefile = malloc(strlen(sRes) + strlen("side cutters.jpg") + 1);
     strcpy(sPicturefile, sRes);
@@ -299,7 +284,6 @@ static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 	cairo_t *cr;
 	surface = cairo_pdf_surface_create(sPdfFile, 504, 648);
 	cr = cairo_create(surface);
-	
 	cairo_set_source_rgb(cr, 0, 0, 0);
 	cairo_select_font_face (cr, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size (cr, 14.17f);
@@ -308,40 +292,14 @@ static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 	cairo_set_font_size (cr, 28.34f);
 	cairo_move_to(cr, 10.0, 50.0f + 14.17f + 28.34f);
 	cairo_show_text(cr, "10 mm Calibri lettertype.");  
-	
 	cairo_show_page(cr);
 	cairo_surface_destroy(surface);
 	cairo_destroy(cr);
-	/* This dialog is painted below our cairo surface !!
 	GtkWidget *dialog ;
     if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The cairo portable data file was exported." );
     gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
     gint result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy( GTK_WIDGET(dialog) );
-	*/
-	
-    /*
-	  save config file
-    float val;
-    FILE *fp1;
-    fp1 = fopen("config", "w");
-    char buffer[12];
-    int j = snprintf(buffer, 12, "%f", 3.141592653589f);
-    g_print("%s\n", buffer);
-    for (int i = 0; i < j; i++) { if (buffer[i] == ',') buffer[i]='.'; }
-    g_print("%s\n", buffer);
-    fprintf(fp1, "Pi = %s\n", buffer); // Read with scanf
-    fprintf(fp1, "Resource = rsc/\n");
-    fprintf(fp1, "Filetest = testpdf.pdf\n");
-    fprintf(fp1, "Working = workingdirectory\n");
-    fprintf(fp1, "Documents = documentfolder\n");
-    fprintf(fp1, "Apps = appfolder\n");
-    fprintf(fp1, "Pictures = picturefolder\n");
-    fprintf(fp1, "Desktop = desktopfolder\n");
-    fprintf(fp1, "Downloads = downloadfolder\n");
-    fprintf(fp1, "Thrash = thrashfolder\n");
-    fclose(fp1);
-     */
 }
 
 static void bImportdxf_clicked(GtkWidget *button, struct Icons *icons)
@@ -368,7 +326,7 @@ static void bText_clicked(GtkWidget *button, struct Icons *icons)
 int main(int argc, char *argv[] )
 {
 	// main window
-	GtkWidget *window;
+	
 	GdkPixbuf *icon;
 	gtk_init(&argc, &argv );
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL );
@@ -383,8 +341,7 @@ int main(int argc, char *argv[] )
     hints.max_height = workarea.height - 36;
     gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width - 15, workarea.height - 36);
-	iWindowx = 5;
-	iWindowy = 5;
+
 	*/
 	hints.min_width = workarea.width;
     hints.max_width = workarea.width;
@@ -392,18 +349,15 @@ int main(int argc, char *argv[] )
     hints.max_height = workarea.height;
     gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height);
-	iWindowx = 0;
-	iWindowy = 0;
-	gtk_window_move (GTK_WINDOW(window), iWindowx, iWindowy);
+
+	gtk_window_move (GTK_WINDOW(window), 0, 0);
 	gtk_window_set_title(GTK_WINDOW(window), "Side Cutters" );
 
 	// icon
     char *sRes = sFromConf("Resource");
-	//g_print("sFromConf =%s \n" ,sRes);
     char *sIconfile = malloc(strlen(sRes) + strlen("icon.png") + 1);
     strcpy(sIconfile, sRes);
     strcat(sIconfile, "icon.png");
-	//g_print("%s \n" ,sIconfile);
 	icon = create_pixbuf(sIconfile );
 	gtk_window_set_icon(GTK_WINDOW(window), icon );
 	
@@ -781,148 +735,154 @@ int main(int argc, char *argv[] )
 	gtk_button_set_image (GTK_BUTTON(bImportdxf), iImportdxf0 );
 	GtkWidget *vbox;
     vbox = gtk_box_new (FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(center_vbox), vbox );
+	gtk_box_pack_start (GTK_BOX(center_vbox), vbox, FALSE, FALSE, 0);
 	GtkWidget *buttonbox;
     buttonbox = gtk_box_new (TRUE, 0);
-	gtk_container_add(GTK_CONTAINER(vbox), buttonbox );
+	gtk_box_pack_start (GTK_BOX(vbox), buttonbox, FALSE, FALSE, 0);
 	GtkWidget *buttonbox2;
 	buttonbox2 = gtk_box_new(TRUE, 0); 
-	g_signal_connect(buttonbox2, "size-allocate", G_CALLBACK(getsize), "buttonbox2");
-	gtk_container_add(GTK_CONTAINER(vbox), buttonbox2 );
+	g_signal_connect(buttonbox, "size-allocate", G_CALLBACK(getsize), "buttonbox");
+	//gtk_container_add(GTK_CONTAINER(vbox), buttonbox2 );
+	gtk_box_pack_end (GTK_BOX(vbox), buttonbox2, FALSE, FALSE, 0);
+	GtkWidget *drawing_area;
+	frame = gtk_frame_new (NULL);
+	gtk_box_pack_start (GTK_BOX(vbox), frame, FALSE, FALSE, 0);
+	drawing_area = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (drawing_area, (gint)(307.0 * PPMM), (gint)(215.0 * PPMM) );
+	gtk_container_add (GTK_CONTAINER(frame), drawing_area);
+	g_signal_connect(G_OBJECT(frame), "draw", G_CALLBACK(on_draw_event), NULL);
+	g_signal_connect(G_OBJECT(window), "motion-notify-event", G_CALLBACK (mouse_moved), NULL);
 	gtk_box_pack_start (GTK_BOX(buttonbox), bLine, FALSE, FALSE, 0);
 	gchar *lLine = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
 	gtk_widget_set_tooltip_markup(bLine, lLine);
 	gtk_widget_show(bLine );
 	g_signal_connect(bLine, "clicked", G_CALLBACK(bLine_clicked ), &icons );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bPolyline, FALSE, FALSE, 0);
 	gchar *lPolyline = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Polyline</span>";
 	gtk_widget_set_tooltip_markup(bPolyline, lPolyline);
 	gtk_widget_show(bPolyline );
 	g_signal_connect(bPolyline, "clicked", G_CALLBACK(bPolyline_clicked ), &icons );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bRectangle, FALSE, FALSE, 0);
 	gchar *lRectangle = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Rectangle</span>";
 	gtk_widget_set_tooltip_markup(bRectangle, lRectangle);
 	gtk_widget_show(bRectangle );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bSquare, FALSE, FALSE, 0);
 	gchar *lSquare = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Square</span>";
 	gtk_widget_set_tooltip_markup(bSquare, lSquare);
 	gtk_widget_show(bSquare );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bCircle, FALSE, FALSE, 0);
 	gchar *lCircle = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Circle</span>";
 	gtk_widget_set_tooltip_markup(bCircle, lCircle);
 	gtk_widget_show(bCircle );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bCirclethree, FALSE, FALSE, 0);
 	gchar *lCirclethree = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Circle through three points</span>";
 	gtk_widget_set_tooltip_markup(bCirclethree, lCirclethree);
 	gtk_widget_show(bCirclethree );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bArc, FALSE, FALSE, 0);
 	gchar *lArc = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Arc</span>";
 	gtk_widget_set_tooltip_markup(bArc, lArc);
 	gtk_widget_show(bArc );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bArcthree, FALSE, FALSE, 0);
 	gchar *lArcthree = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Arc through three points</span>";
 	gtk_widget_set_tooltip_markup(bArcthree, lArcthree);
 	gtk_widget_show(bArcthree );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bEllipse, FALSE, FALSE, 0);
 	gchar *lEllipse = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Ellipse</span>";
 	gtk_widget_set_tooltip_markup(bEllipse, lEllipse);
 	gtk_widget_show(bEllipse );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bCubic, FALSE, FALSE, 0);
 	gchar *lCubic = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Cubic bezier curve</span>";
 	gtk_widget_set_tooltip_markup(bCubic, lCubic);
 	gtk_widget_show(bCubic );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bQuadratic, FALSE, FALSE, 0);
 	gchar *lQuadratic = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Quadratic bezier curve</span>";
 	gtk_widget_set_tooltip_markup(bQuadratic, lQuadratic);
 	gtk_widget_show(bQuadratic );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bText, FALSE, FALSE, 0);
 	gchar *lText = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Text</span>";
 	gtk_widget_set_tooltip_markup(bText, lText);
 	gtk_widget_show(bText );
 	g_signal_connect(bText, "clicked", G_CALLBACK(bText_clicked ), &icons);
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bImage, FALSE, FALSE, 0);
 	gchar *lImage = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Image</span>";
 	gtk_widget_set_tooltip_markup(bImage, lImage);
 	gtk_widget_show(bImage );
 	g_signal_connect(bImage, "clicked", G_CALLBACK(bImage_clicked ), &icons );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bLinear, FALSE, FALSE, 0);
 	gchar *lLinear = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Linear dimension</span>";
 	gtk_widget_set_tooltip_markup(bLinear, lLinear);
 	gtk_widget_show(bLinear );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bAligned, FALSE, FALSE, 0);
 	gchar *lAligned = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Aligned dimension</span>";
 	gtk_widget_set_tooltip_markup(bAligned, lAligned);
 	gtk_widget_show(bAligned );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bAngular, FALSE, FALSE, 0);
 	gchar *lAngular = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Angular dimension</span>";
 	gtk_widget_set_tooltip_markup(bAngular, lAngular);
 	gtk_widget_show(bAngular );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bRadius, FALSE, FALSE, 0);
 	gchar *lRadius = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Radius dimension</span>";
 	gtk_widget_set_tooltip_markup(bRadius, lRadius);
 	gtk_widget_show(bRadius );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bRound, FALSE, FALSE, 0);
 	gchar *lRound = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Round edges</span>";
 	gtk_widget_set_tooltip_markup(bRound, lRound);
 	gtk_widget_show(bRound );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bChamfer, FALSE, FALSE, 0);
 	gchar *lChamfer = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Chamfer edges</span>";
 	gtk_widget_set_tooltip_markup(bChamfer, lChamfer);
 	gtk_widget_show(bChamfer );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bBreak, FALSE, FALSE, 0);
 	gchar *lBreak = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Break at intersect</span>";
 	gtk_widget_set_tooltip_markup(bBreak, lBreak);
 	gtk_widget_show(bBreak );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox), bShorten, FALSE, FALSE, 0);
 	gchar *lShorten = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Shorten to intersect</span>";
 	gtk_widget_set_tooltip_markup(bShorten, lShorten);
 	gtk_widget_show(bShorten );
-	
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bExportpdf, FALSE, FALSE, 0);
 	gchar *lExportpdf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Export Pdf</span>";
 	gtk_widget_set_tooltip_markup(bExportpdf, lExportpdf);
 	gtk_widget_show(bExportpdf );
 	g_signal_connect(bExportpdf, "clicked", G_CALLBACK(bExportpdf_clicked ), &icons );
-    
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bImportdxf, FALSE, FALSE, 0);
 	gchar *lImportdxf = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Import Dxf</span>";
 	gtk_widget_set_tooltip_markup(bImportdxf, lImportdxf);
 	gtk_widget_show(bImportdxf );
     g_signal_connect(bImportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
 	g_signal_connect(bImportdxf, "clicked", G_CALLBACK(bImportdxf_clicked ), &icons );
-	
 	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	gtk_widget_show(window );
 	gtk_widget_show_all((GtkWidget*)window );
-	
 	gint iAllocatedheight = gtk_widget_get_allocated_height(window);
 	gint iAllocatedwidth = gtk_widget_get_allocated_width(window);
-	g_print("Window size x %d y %d width %d height %d \n",iWindowx, iWindowy, iAllocatedwidth, iAllocatedheight);
-		
+	g_print("Window size x %d y %d width %d height %d \n", 0, 0, iAllocatedwidth, iAllocatedheight);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit ), NULL );
-	g_signal_connect(G_OBJECT(window), "window-state-event", G_CALLBACK(callback_minimize), NULL);
-
+	//g_signal_connect(G_OBJECT(window), "window-state-event", G_CALLBACK(callback_minimize), NULL);
 	g_object_unref(icon ); 	
 	gtk_main();
   
 }
+
+/*
+	  save config file
+    float val;
+    FILE *fp1;
+    fp1 = fopen("config", "w");
+    char buffer[12];
+    int j = snprintf(buffer, 12, "%f", 3.141592653589f);
+    g_print("%s\n", buffer);
+    for (int i = 0; i < j; i++) { if (buffer[i] == ',') buffer[i]='.'; }
+    g_print("%s\n", buffer);
+    fprintf(fp1, "Pi = %s\n", buffer); // Read with scanf
+    fprintf(fp1, "Resource = rsc/\n");
+    fprintf(fp1, "Filetest = testpdf.pdf\n");
+    fprintf(fp1, "Working = workingdirectory\n");
+    fprintf(fp1, "Documents = documentfolder\n");
+    fprintf(fp1, "Apps = appfolder\n");
+    fprintf(fp1, "Pictures = picturefolder\n");
+    fprintf(fp1, "Desktop = desktopfolder\n");
+    fprintf(fp1, "Downloads = downloadfolder\n");
+    fprintf(fp1, "Thrash = thrashfolder\n");
+    fclose(fp1);
+     */
