@@ -6,6 +6,7 @@
 #include <cairo-pdf.h>
 #include "testpdf.c"
 #include "testcairo.c"
+#include "taskbar.c"
 #define MAX_LEN 256
 #define PPMM 3.55f          // Monitor resolution, platform dependent
 
@@ -13,6 +14,8 @@ gboolean bCairoinitialized = FALSE;
 gboolean bCairoshown = FALSE;
 GtkWidget *window;
 GtkWidget *frame;
+gint iLeft, iRight, iTop, iBottom;
+
 
 void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data ) 
 {
@@ -26,6 +29,7 @@ void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data )
 		iWindowx = allocation->x + allocation->width;
 		iWindowy = allocation->y;
 	}
+	
 }
 
 static char *sFromConf(char *KeytoFind )
@@ -332,25 +336,18 @@ int main(int argc, char *argv[] )
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL );
 	GdkRectangle workarea = {0 };
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea );	
-	g_print ("gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea ); \nworkarea.width %d, workarea.height %d\n", workarea.width, workarea.height);
+	g_print ("workarea.width %d, workarea.height %d\n", workarea.width, workarea.height);
     GdkGeometry hints;
-	/* MS windows taskbar should be done in windows api.
-    hints.min_width = workarea.width - 15;
-    hints.max_width = workarea.width - 15;
-    hints.min_height = workarea.height - 36; // taskbar
-    hints.max_height = workarea.height - 36;
-    gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
-	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width - 15, workarea.height - 36);
-
-	*/
+	gint iWinLeft = taskbar(&iLeft, &iRight, &iTop, &iBottom);
+	g_print("iLeft %d, iRight %d, iTop %d, iBottom %d\n",iLeft, iRight, iTop, iBottom);
 	hints.min_width = workarea.width;
     hints.max_width = workarea.width;
     hints.min_height = workarea.height;
     hints.max_height = workarea.height;
     gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
+	gtk_widget_set_size_request(GTK_WIDGET (window), workarea.width, workarea.height);
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height);
-
-	gtk_window_move (GTK_WINDOW(window), 0, 0);
+	gtk_window_move (GTK_WINDOW(window), iLeft, iTop);
 	gtk_window_set_title(GTK_WINDOW(window), "Side Cutters" );
 
 	// icon
@@ -853,10 +850,20 @@ int main(int argc, char *argv[] )
 	g_signal_connect(bImportdxf, "clicked", G_CALLBACK(bImportdxf_clicked ), &icons );
 	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );
 	gtk_widget_show(window );
+	gint wix, wiy;
+	gdk_window_get_origin (gtk_widget_get_window (GTK_WIDGET(window)), &wix, &wiy);
+	g_print("Window manager gives us borders. Client x %d Client y %d\n", wix - iLeft, wiy - iTop);
+	hints.min_width = workarea.width - 2 * wix + 2 * iLeft;
+	hints.max_width = workarea.width - 2 * wix + 2 * iLeft;
+	hints.min_height = workarea.height - wiy + iTop - 2 * wix + 2 * iLeft;
+	hints.max_height = workarea.height - wiy + iTop - 2 * wix + 2 * iLeft;
+	gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
+	gtk_widget_set_size_request(GTK_WIDGET (window), workarea.width - 2 * wix + 2 * iLeft, workarea.height - wiy + iTop - 2 * wix + 2 * iLeft);
+	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width - 2 * wix + 2 * iLeft, workarea.height - wiy + iTop - 2 * wix + 2 * iLeft);
+	g_print("Request resize w %d h %d \n", workarea.width - 2 * wix + 2 * iLeft, workarea.height - wiy + iTop - 2 * wix + 2 * iLeft);
+	gtk_window_move (GTK_WINDOW(window), iLeft, iTop + wix - iLeft);
+	g_print("Move x %d y %d \n", iLeft, iTop + wix - iLeft);
 	gtk_widget_show_all((GtkWidget*)window );
-	gint iAllocatedheight = gtk_widget_get_allocated_height(window);
-	gint iAllocatedwidth = gtk_widget_get_allocated_width(window);
-	g_print("Window size x %d y %d width %d height %d \n", 0, 0, iAllocatedwidth, iAllocatedheight);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit ), NULL );
 	//g_signal_connect(G_OBJECT(window), "window-state-event", G_CALLBACK(callback_minimize), NULL);
 	g_object_unref(icon ); 	

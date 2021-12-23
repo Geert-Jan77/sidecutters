@@ -231,7 +231,6 @@ int animate(GtkWidget *cairowindow)
 	//change tranperancy
 	bTransparency=TRUE;
 	tran_setup(cairowindow); //Transparency -> no coordinates are shown. 
-	
 	return 0;
 }
 
