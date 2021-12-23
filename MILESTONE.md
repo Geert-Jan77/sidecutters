@@ -1,17 +1,17 @@
 # Milestones
 
-| Date             	| Milestone Achieved          	                                                                                  |
-|------------------	|---------------------------------------------------------------------------------------------------------------	|
-| 27 November 2021 	| Birthday of Side Cutters, Free CAD software                                                                   	|
-| 2 December 2021   | Project Defined                                                                                                 | 
-| 12 December 2021 	| Documentation: How to Compile                                                                                   |
-| 16 December 2021 	| Functional on MacOS and windows: Pdf export * buttons * tooltips * local folders * program icon	* open github website with default browser |
+| Date             	| Tag         | Milestone Achieved          	                                                                                  |
+|------------------	|-------------|---------------------------------------------------------------------------------------------------------------	|
+| 27 November 2021 	|             | Birthday of Side Cutters, Free CAD software                                                                   	|
+| 2 December 2021   |             | Project Defined                                                                                                 | 
+| 12 December 2021 	|             | Documentation: How to Compile                                                                                   |
+| 16 December 2021 	| Milestone-4 | Functional on MacOS and windows: Pdf export * buttons * tooltips * local folders * program icon	* open github website with default browser |
+| 23 December 2022  | Milestone-5 | The windows Taskbar is excluded from Side Cutters window                                                        |
 
 # Roadmap
 
 |Date               | Functionality                                                                                                   |
 |-----------------  |---------------------------------------------------------------------------------------------------------------  |
-| 7 Februari 2022   | The windows Taskbar is excluded from Side Cutters window                                                        |
 | 21 Februari 2022  | Display calibration is available for all known monitor sizes *doc/Display.md*                                   |
 | 7 March 2022      | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
 | 14 March 2022     | Show the Graphical user interface scaled on all known monitor sizes, menu and tooltips use the same font        |
