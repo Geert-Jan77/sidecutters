@@ -10,6 +10,29 @@
     //Defined on OpenBSD
 #elif __APPLE__ 
     //Defined on Mac OS X
+    gint taskbar(gint *left, gint *right, gint *top, gint *bottom)
+    {
+        gint width_mm, height_mm;
+        gint width_pix, height_pix;
+        GdkRectangle workarea = {0};
+        GdkMonitor *monitor;
+        monitor = gdk_display_get_primary_monitor(gdk_display_get_default());
+        width_mm = gdk_monitor_get_width_mm (monitor);
+        height_mm = gdk_monitor_get_height_mm (monitor);
+        GdkRectangle r = {0};
+        gdk_monitor_get_geometry(monitor, &r);
+        width_pix = (gint)r.width;
+        height_pix = (gint)r.height;
+        printf("Screen size: %d mm x  %d mm\n", width_mm, height_mm);
+        printf("Screen resolution: %d x %d \n", width_pix, height_pix);
+        gdk_monitor_get_workarea( monitor, &workarea);
+        printf("Max size: left %d, right %d, top %d, bottom %d\n", workarea.x, workarea.x + workarea.width, workarea.y, workarea.y + workarea.height);
+        *left = (gint)workarea.x;
+        *right = (gint)workarea.x + workarea.width;
+        *top = (gint)workarea.y;
+        *bottom = (gint)workarea.y + workarea.height;
+        return 6;
+    }
 #elif __hpux
     //Defined on HP-UX
 #elif__osf__ 
@@ -30,7 +53,7 @@
 		LPPOINT lp1,lp2;
 		iHsize = GetSystemMetrics(SM_CXSCREEN);
 		iVsize = GetSystemMetrics(SM_CYSCREEN);
-		printf("Screen Resolution w x h %d x %d \n", iHsize, iVsize);  
+		printf("Screen resolution: %d x %d \n", iHsize, iVsize);
 		RECT rect, rect1;
 		HWND taskBar = FindWindow("Shell_traywnd", NULL); 
 		if(taskBar && GetWindowRect(taskBar, &rect)) 
@@ -47,7 +70,7 @@
 			*top = (gint)rect1.top;
 			*bottom = (gint)rect1.bottom;
 		}
-		return 0;
+		return 11;
 	}
 
 #endif
