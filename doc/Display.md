@@ -1,6 +1,6 @@
 # Display
 
-The aim of this document is displaying all items real size on the monitor, scale 1:1 We define the resolution in pixels per mm. Possible choices for the display depend on the pixel width and height.
+The aim of this document is displaying all items real size on the monitor, scale 1:1. We define the resolution in pixels per mm. Possible choices for the display depend on the pixel width and height. GTK3 Also has a method to determine the display width in mm and the display height in mm, and these methods will be used first.
 
 | Display Diagonal (inch) | Display width (pixel) | Display height (pixel) | Display width (mm) | Display height (mm) | Resolution (pixel/mm) | Ratio |
 |-------------------------|-----------------------|------------------------|--------------------|---------------------|-----------------------|-------|
