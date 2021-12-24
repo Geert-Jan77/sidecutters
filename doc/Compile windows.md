@@ -36,5 +36,5 @@ Append ;D:\msys64\mingw64\bin to the path and click [Ok] three times.
 2.  Download the zipped code from https://github.com/Geert-Jan77/sidecutters green *code* button, https://github.com/Geert-Jan77/sidecutters/archive/refs/heads/main.zip and unzip. Find the 'sidecutters-main' folder. The msys shell listens to both ls (Bash command) and dir (DOS command)
 3.  Run the command <code>./compile-MSwin.sh</code>
 ![Screenshot](Screenshot3.png)
-4.  Run the command <code>./'side cutters.exe'</code> This runs a minimal GTK application, our own forms will be created in there. This will also work as <code>"side cutters.exe"</code> on a Command Prompt.
+4.  Run the command <code>./'side cutters.exe'</code> This will also work as <code>"side cutters.exe"</code> on a Command Prompt.
  
