@@ -1,4 +1,4 @@
-When asking for donations, you must consider the following:
+When asking for donations, you must consider the amazing six tips:
 
  - Our opensource community is setting the standard on software, we are the best programmers, we are elite and giving is better than taking
  - There is no official standard for software, there is no CE declaration of conformity and no notified body to test it according to the standard
