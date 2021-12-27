@@ -765,6 +765,8 @@ int main(int argc, char *argv[] )
 	gtk_container_add (GTK_CONTAINER(frame), drawing_area);
 	g_signal_connect(G_OBJECT(frame), "draw", G_CALLBACK(on_draw_event), NULL);
 	g_signal_connect(G_OBJECT(window), "motion-notify-event", G_CALLBACK (mouse_moved), NULL);
+	g_signal_connect(G_OBJECT(window), "button-press-event", G_CALLBACK (button_pressed), NULL);
+	//g_signal_connect(G_OBJECT(window), "button-release-event", G_CALLBACK (button_released), NULL);
 	gtk_box_pack_start (GTK_BOX(buttonbox), bLine, FALSE, FALSE, 0);
 	gchar *lLine = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Line</span>";
 	gtk_widget_set_tooltip_markup(bLine, lLine);

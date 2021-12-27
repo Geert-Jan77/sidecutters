@@ -52,6 +52,21 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
 	return FALSE;
 }
 
+static gboolean button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer user_data) 
+{
+	gint xn = (gint) event->x - iWindowx;
+	gint yn = (gint) event->y - iWindowy;                               
+    if ((event->type == GDK_BUTTON_PRESS) && !(event->state == GDK_CONTROL_MASK)) g_print("Click (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM); 
+	if ((event->type == GDK_BUTTON_PRESS) && (event->state == GDK_CONTROL_MASK)) g_print("Control - Click (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM); 	
+	if (event->type == GDK_2BUTTON_PRESS) g_print("Doubleclick (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM ); 
+	return TRUE;
+}
+static gboolean button_released(GtkWidget *widget, GdkEventButton *event, gpointer user_data) 
+{
+    //g_print("Button Released\n");
+	return TRUE;
+}
+
 static void do_drawing(cairo_t *Cairo)
 {	
 
