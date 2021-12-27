@@ -1,7 +1,8 @@
 #include <cairo.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
-#define MM 2.834646f        // 1 pt = 2.83 mm        
+#define MMPT 2.834646f      // 2.83 mm = 1 pt
+#define PTPX 0.75f          // 0.75 pt = 1 px
 
 char label[MAX_LEN ];
 int x, y = 0;  
@@ -74,7 +75,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_set_source_rgb(Cairo, 0, 0, 0);
 	cairo_text_extents_t extents1, extents2, extents3;
 	// rectangle 
-	cairo_set_line_width (Cairo, 0.2 * MM ); //0.2 mm linewidth
+	cairo_set_line_width (Cairo, 0.2 * MMPT ); //0.2 mm linewidth
 	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
 	cairo_line_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
 	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
@@ -87,26 +88,26 @@ static void do_drawing(cairo_t *Cairo)
 	// textbox
 	cairo_set_source_rgb(Cairo, 0, 0, 0);
 	cairo_select_font_face(Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-	cairo_set_font_size(Cairo, 3.5 * MM);
-	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3.5 mm.", &extents1);
-	//g_print("Target font height %f mm Realised fontheight %f mm\n", 3.0, extents1.height / fPPMM);
-	fScalefont = 3.5f * fPPMM / extents1.height;
+    cairo_set_font_size(Cairo, 3.0 * fPPMM / PTPX);
+	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3 mm.", &extents1);
+    if (!bMarker1) g_print("Target font height %f mm Realised fontheight %f mm\n", 3.0, extents1.height /fPPMM );
+    fScalefont = 3.0 * fPPMM / extents1.height;
 	if (!bMarker1) {g_print("Font Scaling %.2f \n", fScalefont); bMarker1=TRUE;}
-	cairo_set_font_size(Cairo, 3.5 * fScalefont * MM);
-	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3.5 mm.", &extents1);
+    cairo_set_font_size(Cairo, 3.0 * fPPMM / PTPX);
+	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3 mm.", &extents1);
 	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents1.width - extents1.x_bearing, (215.0 * fPPMM) - extents1.height - extents1.y_bearing  );   
-	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 3.5 mm.");    
+	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 3 mm.");
 	// textbox
 	cairo_set_source_rgb(Cairo, 0, 0, 0);
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+    cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	cairo_text_extents(Cairo, label, &extents2);
 	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents2.width - extents2.x_bearing, (215.0 * fPPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
 	cairo_show_text(Cairo, label);  
 	// nomius
 	cairo_set_source_rgb(Cairo, 0, 0, 0);
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+    cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	for(int i = 0; i <= 29; i++)
 	{
 		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * fPPMM , 195 * fPPMM + 30.0 * fPPMM);
@@ -129,7 +130,7 @@ static void do_drawing(cairo_t *Cairo)
 	// nomius vertical
 	cairo_set_source_rgb(Cairo, 0, 0, 0);
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+    cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	for(int i = 0; i <= 21; i++)
 	{
 		cairo_move_to(Cairo, 0 * fPPMM + 10.0 * fPPMM, (215.0 + 1.0 - (float)i * 10.0) * fPPMM );
@@ -165,7 +166,7 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	while (clock() < start_time + milli_seconds);
 	cairo_text_extents_t extents1, extents2, extents3;
 	// rectangle 
-	cairo_set_line_width (Cairo, 0.2 * MM ); //0.2 mm linewidth
+	cairo_set_line_width (Cairo, 0.2 * MMPT ); //0.2 mm linewidth
 	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
 	cairo_line_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
 	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
@@ -176,19 +177,19 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM) + (210.0 * fPPMM) );
 	cairo_stroke(Cairo);
 	cairo_select_font_face(Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-	cairo_set_font_size(Cairo, 3.5 * fScalefont * MM);
-	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3.5 mm.", &extents1);
+	cairo_set_font_size(Cairo, 3.0 * fPPMM / PTPX);
+	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3 mm.", &extents1);
 	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents1.width - extents1.x_bearing, (215.0 * fPPMM) - extents1.height - extents1.y_bearing  );   
-	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 3.5 mm.");    
+	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 3 mm.");
 	// textbox
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+	cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	cairo_text_extents(Cairo, label, &extents2);
 	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents2.width - extents2.x_bearing, (215.0 * fPPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
 	cairo_show_text(Cairo, label);  
 	// nomius
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+	cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	for(int i = 0; i <= 29; i++)
 	{
 		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * fPPMM , 195 * fPPMM + 30.0 * fPPMM);
@@ -210,7 +211,7 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	}
 	// nomius vertical
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
-	cairo_set_font_size (Cairo, 3.5 * fScalefont * MM);
+	cairo_set_font_size (Cairo, 3.0 * fPPMM / PTPX);
 	for(int i = 0; i <= 21; i++)
 	{
 		cairo_move_to(Cairo, 0 * fPPMM + 10.0 * fPPMM, (215.0 + 1.0 - (float)i * 10.0) * fPPMM );
