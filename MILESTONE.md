@@ -13,7 +13,6 @@
 
 |Date               | Tag          | Functionality                                                                                                   |
 |-----------------  |--------------|---------------------------------------------------------------------------------------------------------------  |
-
 | 7 March 2022      | v1.1         | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
 | 14 March 2022     | Milestone-7  | Show the Graphical user interface scaled on all known monitor sizes, menu and tooltips use the same font        |
 | 21 March 2022     | v1.2         | Draw all objects on Pdf surface                                                                                 |
