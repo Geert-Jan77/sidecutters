@@ -6,16 +6,32 @@
 #include <cairo-pdf.h>
 #include "testpdf.c"
 #include "testcairo.c"
-#include "taskbar.c"
 #define MAX_LEN 256
-#define PPMM 3.55f          // Monitor resolution, platform dependent
 
 gboolean bCairoinitialized = FALSE;
 gboolean bCairoshown = FALSE;
 GtkWidget *window;
 GtkWidget *frame;
-gint iLeft, iRight, iTop, iBottom;
+gint iLeft, iTop;
 
+gint calibratescreen(float *ppmm, float *fSize)
+{
+    gint width_mm, height_mm;
+    gint width_pix, height_pix;
+    GdkRectangle workarea = {0};
+    GdkMonitor *monitor;
+    monitor = gdk_display_get_primary_monitor(gdk_display_get_default());
+    width_mm = gdk_monitor_get_width_mm (monitor);
+    height_mm = gdk_monitor_get_height_mm (monitor);
+    GdkRectangle r = {0};
+    gdk_monitor_get_geometry(monitor, &r);
+    width_pix = (gint)r.width;
+    height_pix = (gint)r.height;
+    gdk_monitor_get_workarea( monitor, &workarea);
+    *fSize = sqrt((float)width_mm / 25.4f * (float)width_mm / 25.4f + (float)height_mm / 25.4f * (float)height_mm / 25.4f);
+	*ppmm = (float) width_pix / (float)width_mm; 
+	return 6;
+}
 
 void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data ) 
 {
@@ -282,7 +298,6 @@ static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
     strcat(sPicturefile, "side cutters.jpg");
     char* sPdfFile = sFromConf("Filetest");
 	char* arg[] = {sPdfFile, sPicturefile };
-	//int iRet = testpdf(arg);
 	int iRet = 0;
 	cairo_surface_t *surface;
 	cairo_t *cr;
@@ -336,10 +351,11 @@ int main(int argc, char *argv[] )
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL );
 	GdkRectangle workarea = {0 };
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea );	
-	g_print ("workarea.width %d, workarea.height %d\n", workarea.width, workarea.height);
+	//g_print ("workarea.width %d, workarea.height %d\n", workarea.width, workarea.height);
     GdkGeometry hints;
-	gint iWinLeft = taskbar(&iLeft, &iRight, &iTop, &iBottom);
-	g_print("iLeft %d, iRight %d, iTop %d, iBottom %d\n",iLeft, iRight, iTop, iBottom);
+	gint iRet = calibratescreen(&fPPMM, &fScreensize);
+	//g_print("iLeft %d, iRight %d, iTop %d, iBottom %d\n",iLeft, iRight, iTop, iBottom);
+	g_print("Pixels per mm %.2f Screen diagonal inches %.1f\" \n", fPPMM, fScreensize);
 	hints.min_width = workarea.width;
     hints.max_width = workarea.width;
     hints.min_height = workarea.height;
@@ -347,7 +363,7 @@ int main(int argc, char *argv[] )
     gtk_window_set_geometry_hints( GTK_WINDOW(window), window, &hints, (GdkWindowHints)(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
 	gtk_widget_set_size_request(GTK_WIDGET (window), workarea.width, workarea.height);
 	gtk_window_set_default_size (GTK_WINDOW (window), workarea.width, workarea.height);
-	gtk_window_move (GTK_WINDOW(window), iLeft, iTop);
+	gtk_window_move (GTK_WINDOW(window), workarea.x, workarea.y);
 	gtk_window_set_title(GTK_WINDOW(window), "Side Cutters" );
 
 	// icon
@@ -745,7 +761,7 @@ int main(int argc, char *argv[] )
 	frame = gtk_frame_new (NULL);
 	gtk_box_pack_start (GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 	drawing_area = gtk_drawing_area_new ();
-	gtk_widget_set_size_request (drawing_area, (gint)(320.0 * PPMM), (gint)(230.0 * PPMM) );
+	gtk_widget_set_size_request (drawing_area, (gint)(320.0 * fPPMM), (gint)(230.0 * fPPMM) );
 	gtk_container_add (GTK_CONTAINER(frame), drawing_area);
 	g_signal_connect(G_OBJECT(frame), "draw", G_CALLBACK(on_draw_event), NULL);
 	g_signal_connect(G_OBJECT(window), "motion-notify-event", G_CALLBACK (mouse_moved), NULL);
@@ -852,6 +868,8 @@ int main(int argc, char *argv[] )
 	gtk_widget_show(window );
 	gint wix, wiy;
 	gdk_window_get_origin (gtk_widget_get_window (GTK_WIDGET(window)), &wix, &wiy);
+	iLeft = workarea.x;
+	iTop = workarea.y;
 	g_print("Window manager gives us borders. Client x %d Client y %d\n", wix - iLeft, wiy - iTop);
 	hints.min_width = workarea.width - 2 * wix + 2 * iLeft;
 	hints.max_width = workarea.width - 2 * wix + 2 * iLeft;

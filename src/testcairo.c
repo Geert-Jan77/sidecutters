@@ -1,8 +1,7 @@
 #include <cairo.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
-#define MM 2.834646f        // 1 pt = 2.83 mm
-#define PPMM 3.55f          // Monitor resolution, platform dependent
+#define MM 2.834646f        // 1 pt = 2.83 mm        
 #define FSCALE 1.426024f    // Fontscaling
 
 char label[MAX_LEN ];
@@ -14,6 +13,8 @@ int showcairo();
 gboolean bTransparency = FALSE;
 float alpha = 0.0;
 gint iWindowx, iWindowy;
+float fPPMM;               // Monitor resolution, platform dependent
+float fScreensize;         // Monitor size in inches, platform dependent
 
 static void tran_setup(GtkWidget *win)
 {        
@@ -45,7 +46,7 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
 		y = (guint)e->y;
 		gint xn = (gint) x - iWindowx;
 		gint yn = (gint) y - iWindowy;
-		int j1 = snprintf(label, MAX_LEN, "Coordinates: (%.1f mm,%.1f mm)", (float)xn / PPMM - 20.0 , 215.0 - (float)yn / PPMM );
+		int j1 = snprintf(label, MAX_LEN, "Coordinates: (%.1f mm,%.1f mm)", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM );
 		gtk_widget_queue_draw(widget);
     }
 	return FALSE;
@@ -69,14 +70,14 @@ static void do_drawing(cairo_t *Cairo)
 	// rectangle 
 	cairo_set_line_width (Cairo, 0.2 * MM ); //0.2 mm linewidth
 
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM), (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM));
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM) + (210.0 * PPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM));
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM) + (210.0 * fPPMM) );
 	cairo_stroke(Cairo);
 	
 	// textbox
@@ -84,7 +85,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_select_font_face(Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size(Cairo, 4.0 * FSCALE * MM);
 	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 4mm.", &extents1);
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) - extents1.width - extents1.x_bearing, (215.0 * PPMM) - extents1.height - extents1.y_bearing  );   
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents1.width - extents1.x_bearing, (215.0 * fPPMM) - extents1.height - extents1.y_bearing  );   
 	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 4mm.");    
 	
 	//cairo_set_font_size (Cairo, 200 * FSCALE * MM);
@@ -98,7 +99,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	cairo_text_extents(Cairo, label, &extents2);
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) - extents2.width - extents2.x_bearing, (215.0 * PPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents2.width - extents2.x_bearing, (215.0 * fPPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
 	cairo_show_text(Cairo, label);  
 	
 	// nomius
@@ -107,7 +108,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	for(int i = 0; i <= 29; i++)
 	{
-		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * PPMM , 195 * PPMM + 30.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * fPPMM , 195 * fPPMM + 30.0 * fPPMM);
 		int length = snprintf( NULL, 0, "%d", i );
 		char* str = malloc( length + 1 );
 		snprintf( str, length + 1, "%d", i );
@@ -116,13 +117,13 @@ static void do_drawing(cairo_t *Cairo)
 	}
 	for(int i = 0; i <= 59; i++)
 	{
-		cairo_move_to(Cairo, (20.0 + (float)i * 5.0) * PPMM, 195 * PPMM + 20.0 * PPMM);
-		cairo_line_to(Cairo, (20.0 + (float)i * 5.0) * PPMM, 195 * PPMM + 25.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 + (float)i * 5.0) * fPPMM, 195 * fPPMM + 20.0 * fPPMM);
+		cairo_line_to(Cairo, (20.0 + (float)i * 5.0) * fPPMM, 195 * fPPMM + 25.0 * fPPMM);
 	}
 	for(int i = 0; i <= 297; i++)
 	{
-		cairo_move_to(Cairo, (20.0 + (float)i) * PPMM, 195 * PPMM + 20.0 * PPMM);
-		cairo_line_to(Cairo, (20.0 + (float)i) * PPMM, 195 * PPMM + 23.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 + (float)i) * fPPMM, 195 * fPPMM + 20.0 * fPPMM);
+		cairo_line_to(Cairo, (20.0 + (float)i) * fPPMM, 195 * fPPMM + 23.0 * fPPMM);
 	}
 	
 	// nomius vertical
@@ -131,7 +132,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	for(int i = 0; i <= 21; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 10.0 * PPMM, (215.0 + 1.0 - (float)i * 10.0) * PPMM );
+		cairo_move_to(Cairo, 0 * fPPMM + 10.0 * fPPMM, (215.0 + 1.0 - (float)i * 10.0) * fPPMM );
 		int length = snprintf( NULL, 0, "%d", i );
 		char* str = malloc( length + 1 );
 		snprintf( str, length + 1, "%d", i );
@@ -140,13 +141,13 @@ static void do_drawing(cairo_t *Cairo)
 	}
 	for(int i = 0; i <= 42; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 20.0 * PPMM, (215.0 - (float)i * 5.0) * PPMM );
-		cairo_line_to(Cairo, 0 * PPMM + 15.0 * PPMM, (215.0 - (float)i * 5.0) * PPMM );
+		cairo_move_to(Cairo, 0 * fPPMM + 20.0 * fPPMM, (215.0 - (float)i * 5.0) * fPPMM );
+		cairo_line_to(Cairo, 0 * fPPMM + 15.0 * fPPMM, (215.0 - (float)i * 5.0) * fPPMM );
 	}
 	for(int i = 0; i <= 210; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 20.0 * PPMM, (215.0 - (float)i) * PPMM);
-		cairo_line_to(Cairo, 0 * PPMM + 17.0 * PPMM, (215.0 - (float)i) * PPMM);
+		cairo_move_to(Cairo, 0 * fPPMM + 20.0 * fPPMM, (215.0 - (float)i) * fPPMM);
+		cairo_line_to(Cairo, 0 * fPPMM + 17.0 * fPPMM, (215.0 - (float)i) * fPPMM);
 	}
 	cairo_stroke(Cairo);
 }
@@ -166,32 +167,32 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	cairo_text_extents_t extents1, extents2, extents3;
 	// rectangle 
 	cairo_set_line_width (Cairo, 0.2 * MM ); //0.2 mm linewidth
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM), (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM) + (210.0 * PPMM) );
-	cairo_move_to(Cairo, (20.0 * PPMM), (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM));
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM));
-	cairo_line_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) , (5.0 * PPMM) + (210.0 * PPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM) + (210.0 * fPPMM) );
+	cairo_move_to(Cairo, (20.0 * fPPMM), (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM));
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM));
+	cairo_line_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) , (5.0 * fPPMM) + (210.0 * fPPMM) );
 	cairo_stroke(Cairo);
 	cairo_select_font_face(Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size(Cairo, 4.0 * FSCALE * MM);
 	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 4mm.", &extents1);
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) - extents1.width - extents1.x_bearing, (215.0 * PPMM) - extents1.height - extents1.y_bearing  );   
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents1.width - extents1.x_bearing, (215.0 * fPPMM) - extents1.height - extents1.y_bearing  );   
 	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 4mm.");    
 	// textbox
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	cairo_text_extents(Cairo, label, &extents2);
-	cairo_move_to(Cairo, (20.0 * PPMM) + (297.0 * PPMM) - extents2.width - extents2.x_bearing, (215.0 * PPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
+	cairo_move_to(Cairo, (20.0 * fPPMM) + (297.0 * fPPMM) - extents2.width - extents2.x_bearing, (215.0 * fPPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
 	cairo_show_text(Cairo, label);  
 	// nomius
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	for(int i = 0; i <= 29; i++)
 	{
-		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * PPMM , 195 * PPMM + 30.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 - 2.0 + (float)i * 10.0) * fPPMM , 195 * fPPMM + 30.0 * fPPMM);
 		int length = snprintf( NULL, 0, "%d", i );
 		char* str = malloc( length + 1 );
 		snprintf( str, length + 1, "%d", i );
@@ -200,20 +201,20 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	}
 	for(int i = 0; i <= 59; i++)
 	{
-		cairo_move_to(Cairo, (20.0 + (float)i * 5.0) * PPMM, 195 * PPMM + 20.0 * PPMM);
-		cairo_line_to(Cairo, (20.0 + (float)i * 5.0) * PPMM, 195 * PPMM + 25.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 + (float)i * 5.0) * fPPMM, 195 * fPPMM + 20.0 * fPPMM);
+		cairo_line_to(Cairo, (20.0 + (float)i * 5.0) * fPPMM, 195 * fPPMM + 25.0 * fPPMM);
 	}
 	for(int i = 0; i <= 297; i++)
 	{
-		cairo_move_to(Cairo, (20.0 + (float)i) * PPMM, 195 * PPMM + 20.0 * PPMM);
-		cairo_line_to(Cairo, (20.0 + (float)i) * PPMM, 195 * PPMM + 23.0 * PPMM);
+		cairo_move_to(Cairo, (20.0 + (float)i) * fPPMM, 195 * fPPMM + 20.0 * fPPMM);
+		cairo_line_to(Cairo, (20.0 + (float)i) * fPPMM, 195 * fPPMM + 23.0 * fPPMM);
 	}
 	// nomius vertical
 	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
 	cairo_set_font_size (Cairo, 4.0 * FSCALE * MM);
 	for(int i = 0; i <= 21; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 10.0 * PPMM, (215.0 + 1.0 - (float)i * 10.0) * PPMM );
+		cairo_move_to(Cairo, 0 * fPPMM + 10.0 * fPPMM, (215.0 + 1.0 - (float)i * 10.0) * fPPMM );
 		int length = snprintf( NULL, 0, "%d", i );
 		char* str = malloc( length + 1 );
 		snprintf( str, length + 1, "%d", i );
@@ -222,13 +223,13 @@ static void do_drawing2(cairo_t *Cairo, GtkWidget *widget)
 	}
 	for(int i = 0; i <= 42; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 20.0 * PPMM, (215.0 - (float)i * 5.0) * PPMM );
-		cairo_line_to(Cairo, 0 * PPMM + 15.0 * PPMM, (215.0 - (float)i * 5.0) * PPMM );
+		cairo_move_to(Cairo, 0 * fPPMM + 20.0 * fPPMM, (215.0 - (float)i * 5.0) * fPPMM );
+		cairo_line_to(Cairo, 0 * fPPMM + 15.0 * fPPMM, (215.0 - (float)i * 5.0) * fPPMM );
 	}
 	for(int i = 0; i <= 210; i++)
 	{
-		cairo_move_to(Cairo, 0 * PPMM + 20.0 * PPMM, (215.0 - (float)i) * PPMM);
-		cairo_line_to(Cairo, 0 * PPMM + 17.0 * PPMM, (215.0 - (float)i) * PPMM);
+		cairo_move_to(Cairo, 0 * fPPMM + 20.0 * fPPMM, (215.0 - (float)i) * fPPMM);
+		cairo_line_to(Cairo, 0 * fPPMM + 17.0 * fPPMM, (215.0 - (float)i) * fPPMM);
 	}
 	cairo_stroke(Cairo);
 	gtk_widget_queue_draw(widget);
