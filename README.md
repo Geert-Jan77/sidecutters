@@ -12,9 +12,6 @@ This software should be free. The aim of this project is to create a multi platf
 It should create electrical drawings automatically and export them as bookmarked portable datafile (pdf). We only use SI units for the drawings. Even the fontheight will be given in millimetre instead of points (1/72 inch).
 
 ## How?
-The software is licensed GPL/LGPL version 2. The Compiler is gcc, not Microsoft Visual Studio and the project is written in C, not in C#. 
-If Windows operating system functionality is used, we import the operating system's dynamical linked library. Windows forms will not be used, we create our own forms instead. This project will have no dependencies.
-
 The software is licensed GPL/LGPL version 2. The Compiler is gcc 11.2.0, not Microsoft Visual Studio and the project is written in C, not in C#. 
 Windows operating system functionality is never used, and the application is not on the Windows API but the GTK 3 API. Even the GTK 3 backbone will barely be used, and the focus is on the Cairo drawing surface. This project will have no build system other than a simple *batch* or *bash* file. Its only dependency will be GTK 3. 
 
