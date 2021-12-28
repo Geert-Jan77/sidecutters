@@ -14,6 +14,7 @@ GtkWidget *window;
 GtkWidget *frame;
 gint iLeft, iTop;
 
+
 gint calibratescreen(float *ppmm, float *fSize)
 {
     gint width_mm, height_mm;
@@ -45,7 +46,6 @@ void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data )
 		iWindowx = allocation->x + allocation->width;
 		iWindowy = allocation->y;
 	}
-	
 }
 
 static char *sFromConf(char *KeytoFind )
@@ -148,57 +148,7 @@ GdkPixbuf *create_pixbuf(const gchar * filename )
 }
 
 // buttons
-struct Icons
-{
-	GtkWidget *line;
-	GtkWidget *line0;
-	GtkWidget *polyline;
-	GtkWidget *polyline0;
-	GtkWidget *polygon;
-	GtkWidget *polygon0;
-	GtkWidget *rectangle;
-	GtkWidget *rectangle0;
-	GtkWidget *square;
-	GtkWidget *square0;
-	GtkWidget *circle;
-	GtkWidget *circle0;
-	GtkWidget *circlethree;
-	GtkWidget *circlethree0;
-	GtkWidget *arc;
-	GtkWidget *arc0;
-	GtkWidget *arcthree;
-	GtkWidget *arcthree0;
-	GtkWidget *ellipse;
-	GtkWidget *ellipse0;
-	GtkWidget *cubic;
-	GtkWidget *cubic0;
-	GtkWidget *quadratic;
-	GtkWidget *quadratic0;
-	GtkWidget *text;
-	GtkWidget *text0;
-	GtkWidget *image;
-	GtkWidget *image0;
-	GtkWidget *linear;
-	GtkWidget *linear0;
-	GtkWidget *aligned;
-	GtkWidget *aligned0;
-	GtkWidget *angular;
-	GtkWidget *angular0;
-	GtkWidget *radius;
-	GtkWidget *radius0;
-	GtkWidget *round;
-	GtkWidget *round0;
-	GtkWidget *chamfer;
-	GtkWidget *chamfer0;
-	GtkWidget *br3ak;
-	GtkWidget *br3ak0;
-	GtkWidget *shorten;
-	GtkWidget *shorten0;
-	GtkWidget *exportpdf;
-	GtkWidget *exportpdf0;
-	GtkWidget *importdxf;
-	GtkWidget *importdxf0;
-};
+
 static gboolean query_tooltip(GtkWidget* self, gint x, gint y, gboolean keyboard_mode, GtkTooltip* tooltip, gpointer user_data)
 {
 	return FALSE;
@@ -217,9 +167,9 @@ static void bImage_clicked(GtkWidget *button, struct Icons *icons )
 
 static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 {
-	static gboolean bLine = FALSE;
-	bLine = !bLine;
-	if (bLine)
+	//static gboolean bLine = FALSE;
+	boLine = !boLine;
+	if (boLine)
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line );
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> line0 );
@@ -409,7 +359,7 @@ int main(int argc, char *argv[] )
 	g_signal_connect (item_opensource, "activate", G_CALLBACK (show_uri_cb), NULL);
 	
 	// buttons
-	struct Icons icons;
+	
     char *sLinefile = malloc(strlen(sRes) + strlen("line.xpm") + 1);
 	char *sLinefile0 = malloc(strlen(sRes) + strlen("line0.xpm") + 1);
     char *sPolylinefile = malloc(strlen(sRes) + strlen("polyline.xpm") + 1);
@@ -698,30 +648,30 @@ int main(int argc, char *argv[] )
 	GtkWidget *iExportpdf0 = icons.exportpdf0;
 	GtkWidget *iImportdxf = icons.importdxf;
 	GtkWidget *iImportdxf0 = icons.importdxf0;
-	GtkWidget *bLine = gtk_button_new();
-	GtkWidget *bPolyline = gtk_button_new();
-	GtkWidget *bPolygon = gtk_button_new();
-	GtkWidget *bRectangle = gtk_button_new();
-	GtkWidget *bSquare = gtk_button_new();
-	GtkWidget *bCircle = gtk_button_new();
-	GtkWidget *bCirclethree = gtk_button_new();
-	GtkWidget *bArc = gtk_button_new();
-	GtkWidget *bArcthree = gtk_button_new();
-	GtkWidget *bEllipse = gtk_button_new();
-	GtkWidget *bCubic = gtk_button_new();
-	GtkWidget *bQuadratic = gtk_button_new();
-	GtkWidget *bText = gtk_button_new();
-	GtkWidget *bImage = gtk_button_new();
-	GtkWidget *bLinear = gtk_button_new();
-	GtkWidget *bAligned = gtk_button_new();
-	GtkWidget *bAngular = gtk_button_new();
-	GtkWidget *bRadius = gtk_button_new();
-	GtkWidget *bRound = gtk_button_new();
-	GtkWidget *bChamfer = gtk_button_new();
-	GtkWidget *bBreak = gtk_button_new();
-	GtkWidget *bShorten = gtk_button_new();
-	GtkWidget *bExportpdf = gtk_button_new();
-	GtkWidget *bImportdxf = gtk_button_new();
+	bLine = GTK_WIDGET(gtk_button_new());
+	bPolyline = GTK_WIDGET(gtk_button_new());
+	bPolygon = GTK_WIDGET(gtk_button_new());
+	bRectangle = GTK_WIDGET(gtk_button_new());
+	bSquare = GTK_WIDGET(gtk_button_new());
+	bCircle = GTK_WIDGET(gtk_button_new());
+	bCirclethree = GTK_WIDGET(gtk_button_new());
+	bArc = GTK_WIDGET(gtk_button_new());
+	bArcthree = GTK_WIDGET(gtk_button_new());
+	bEllipse = GTK_WIDGET(gtk_button_new());
+	bCubic = GTK_WIDGET(gtk_button_new());
+	bQuadratic = GTK_WIDGET(gtk_button_new());
+	bText = GTK_WIDGET(gtk_button_new());
+	bImage = GTK_WIDGET(gtk_button_new());
+	bLinear = GTK_WIDGET(gtk_button_new());
+	bAligned = GTK_WIDGET(gtk_button_new());
+	bAngular = GTK_WIDGET(gtk_button_new());
+	bRadius = GTK_WIDGET(gtk_button_new());
+	bRound = GTK_WIDGET(gtk_button_new());
+	bChamfer = GTK_WIDGET(gtk_button_new());
+	bBreak = GTK_WIDGET(gtk_button_new());
+	bShorten = GTK_WIDGET(gtk_button_new());
+	bExportpdf = GTK_WIDGET(gtk_button_new());
+	bImportdxf = GTK_WIDGET(gtk_button_new());
 	gtk_button_set_image (GTK_BUTTON(bLine), iLine0 );
 	gtk_button_set_image (GTK_BUTTON(bPolyline), iPolyline0 );
 	gtk_button_set_image (GTK_BUTTON(bPolygon), iPolygon0 );

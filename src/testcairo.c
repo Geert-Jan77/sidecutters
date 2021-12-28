@@ -1,23 +1,27 @@
 #include <cairo.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include "buttons.c"
 #define MMPT 2.834646f      // 2.83 mm = 1 pt
 #define PTPX 0.75f          // 0.75 pt = 1 px
 
-char label[MAX_LEN ];
-int x, y = 0;  
 static void do_drawing(cairo_t *);
 static void do_drawing2(cairo_t *, GtkWidget *);
-int hidecairo();
-int showcairo();
-gboolean bTransparency = FALSE;
-gboolean bMarker1 = FALSE;
+
+char label[MAX_LEN ];
 float alpha = 0.0;
-gint iWindowx, iWindowy;
 float fPPMM;               // Monitor resolution, platform dependent
 float fScreensize;         // Monitor size in inches, platform dependent
 float fScalefont;          // Font scaling, platform dependent
-
+int x, y = 0;  
+int hidecairo();
+int showcairo();
+gint iWindowx, iWindowy;
+gint iDrawx0, iDrawx1, iDrawx2, iDrawx3, iDrawx4, iDrawy0, iDrawy1, iDrawy2, iDrawy3, iDrawy4;
+gint iInputs = 0;
+gboolean bTransparency = FALSE;
+gboolean bMarker1 = FALSE;
+gboolean boLine = FALSE;
 
 static void tran_setup(GtkWidget *win)
 {        
@@ -49,7 +53,15 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
 		y = (guint)e->y;
 		gint xn = (gint) x - iWindowx;
 		gint yn = (gint) y - iWindowy;
-		int j1 = snprintf(label, MAX_LEN, "Coordinates: (%.1f mm,%.1f mm)", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM );
+		if (!boLine) snprintf(label, MAX_LEN, "Coordinates: (%.1f mm,%.1f mm)", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM );
+		if ((boLine) && (iInputs == 0)) snprintf(label, MAX_LEN, "Line first point %.0f mm,%.0f mm", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM );
+		if ((boLine) && (iInputs == 1)) snprintf(label, MAX_LEN, "Line second point %.0f mm,%.0f mm or Ctrl+click first point", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM );
+		if ((boLine) && (iInputs == 2)) 
+		{	
+			boLine = FALSE; 
+			iInputs = 0; 
+			gtk_button_set_image (GTK_BUTTON(bLine), icons.line0 );
+		}
 		gtk_widget_queue_draw(widget);
     }
 	return FALSE;
@@ -59,7 +71,12 @@ static gboolean button_pressed(GtkWidget *widget, GdkEventButton *event, gpointe
 {
 	gint xn = (gint) event->x - iWindowx;
 	gint yn = (gint) event->y - iWindowy;                               
-    if ((event->type == GDK_BUTTON_PRESS) && !(event->state == GDK_CONTROL_MASK)) g_print("Click (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM); 
+    if ((event->type == GDK_BUTTON_PRESS) && !(event->state == GDK_CONTROL_MASK)) 
+	{
+		g_print("Click (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM);
+		if ((boLine) && (iInputs == 1)) {iDrawx1 = (gint)((float)xn / fPPMM - 20.0); iDrawy1 = (gint)(215.0 - (float)yn / fPPMM); iInputs = 2;}
+		if ((boLine) && (iInputs == 0)) {iDrawx0 = (gint)((float)xn / fPPMM - 20.0); iDrawy0 = (gint)(215.0 - (float)yn / fPPMM); iInputs = 1;}
+	}
 	if ((event->type == GDK_BUTTON_PRESS) && (event->state == GDK_CONTROL_MASK)) g_print("Control - Click (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM); 	
 	if (event->type == GDK_2BUTTON_PRESS) g_print("Doubleclick (%.1f mm,%.1f mm)\n", (float)xn / fPPMM - 20.0 , 215.0 - (float)yn / fPPMM ); 
 	return TRUE;
