@@ -13,7 +13,7 @@ where a is the OS supported
 7. {MS windows x64, MacOS, Linux, FreeBSD, OpenBSD, NetBSD, AIX, Solaris}
 8. {MS windows x64, MacOS, Linux, FreeBSD, OpenBSD, NetBSD, AIX, Solaris, HP-UX}
 
-where b is the functionality that is tested OKAY on all operating systems defined in a
+where `b` is the functionality that is tested **OKAY** on all operating systems defined in `a`
 1. Draw all defined objects on display *doc/Drawobjects.md*         
 2. Draw all objects on Pdf surface      
 3. Import Dxf drawing
