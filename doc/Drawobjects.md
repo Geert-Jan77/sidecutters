@@ -1,5 +1,5 @@
 # Objects to draw
 
-| Object            | Inputs                               | Config                                       |
-|-------------------|--------------------------------------|----------------------------------------------|
-| Line              | Point1(x mm,y mm) Point2(x mm, y mm) | Color(Red Green Blue) Lineweight(mm)         |
+| Object                                      | Inputs                                  | Config                                       |
+|---------------------------------------------|-----------------------------------------|----------------------------------------------|
+| Line x1 y1 x2 y2 Red Green Blue Thickness   | Point1 x1 mm y1 mm Point2 x2 mm y2 mm   | Color Red Green Blue Thickness mm            |
