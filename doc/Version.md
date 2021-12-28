@@ -1,6 +1,9 @@
 ## Version
 
+The version is in this project `Side Cutters.app/Contents/Info.plist` and `rsc/info.rc`
+
 A version is defined as 
+
 `va.b` 
 
 where a is the OS supported 
@@ -20,4 +23,3 @@ where `b` is the functionality that is tested **OKAY** on all operating systems 
 4. Add drawing templates for all defined rail-mounted electric devices *doc/Drawdevices.md*              
 5. Create *Side Cutters Project* - auto-generate electrical drawing by pressing the *Side Cutters* button  
 
-The version is in this projest `Side Cutters.app/Info.plist` and `rsc/info.rc`
