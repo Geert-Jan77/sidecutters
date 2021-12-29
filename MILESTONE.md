@@ -13,17 +13,18 @@
 
 |Date               | Tag          | Functionality                                                                                                   |
 |-----------------  |--------------|---------------------------------------------------------------------------------------------------------------  |
-| 7 Februari 2022   | Milestone-7  | Add *letter* paper size, add linetype selection, add color selector                                             |
-| 14 Februari 2022  | Milestone-8  | Add windows start menu folder, install app to appfolder                                                         |
-| 21 Februari 2022  | Milestone-9  | Object mode - object selection and edit                                                                         |
+| 21 Januari 2022   | Milestone-7  | Find a place to display the real monitor size                                                                   |
+| 7 Februari 2022   | Milestone-8  | Add *letter* paper size, add linetype selection, add color selector                                             |
+| 14 Februari 2022  | Milestone-9  | Add windows start menu folder, install app to appfolder                                                         |
+| 21 Februari 2022  | Milestone-10 | Object mode - object selection and edit                                                                         |
 | 7 March 2022      | v1.1         | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
-| 14 March 2022     | Milestone-10 | Show the Graphical user interface scaled on all known monitor sizes, menu and tooltips use the same font        |
+| 14 March 2022     | Milestone-11 | Show the Graphical user interface scaled on all known monitor sizes, menu and tooltips use the same font        |
 | 21 March 2022     | v1.2         | Draw all objects on Pdf surface                                                                                 |
 | 7 April 2022      | v1.3         | Import Dxf drawing and add pages to user interface                                                              |
-| 14 April 2022     | Milestone-11 | Define Scp Project file *doc/Projectfile.md* with sections device list, connection table, pages                 |
+| 14 April 2022     | Milestone-12 | Define Scp Project file *doc/Projectfile.md* with sections device list, connection table, pages                 |
 | 21 April 2022     | v1.4         | Add drawing templates for all defined rail-mounted electric devices *doc/Drawdevices.md*                        |
-| 7 May 2022        | Milestone-12 | Create *Side Cutters Project* - device list                                                                     |
-| 21 May 2022       | Milestone-13 | Create *Side Cutters Project* - device connect table                                                            |
+| 7 May 2022        | Milestone-13 | Create *Side Cutters Project* - device list                                                                     |
+| 21 May 2022       | Milestone-14 | Create *Side Cutters Project* - device connect table                                                            |
 | 4 Jun 2022        |              | Define a donation request *doc/Amazing-tips-to-ask-for-donations.md* without loss of functionality in the free software |
 | 5 Jun 2022        | v1.5         | Create *Side Cutters Project* - auto-generate electrical drawing by pressing the *Side Cutters* button          | 
 
