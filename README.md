@@ -21,7 +21,6 @@ He will press the *Generate* button with the *Side Cutter* icon and all the draw
 
 ## I want this software!
 
-Then maybe you should help program it. Start by compiling the source on your pc. Read the *doc* folder on how to compile.
-It's not ready yet, but you should compile it contribute to the project. Read the *doc* folder on how to compile for MacOS or MS Windows.
+It's not ready yet, but you should compile it and contribute to the project. Read the [*doc*](/doc) folder on how to compile for MacOS or MS Windows.
 
 <img src="/doc/pica10a.png" alt="a screenshot of the program so far" width="50%"/><img src="/doc/pica11a.png" alt="a screenshot of the program so far" width="50%"/>
