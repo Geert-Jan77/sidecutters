@@ -1,4 +1,5 @@
-# Compile
+# Compile Side Cutters
+How to compile on Fedora or Ubuntu linux
 
 ## Fedora
 
@@ -12,3 +13,5 @@ This will run weston as an X client. clicking on the terminal icon in the weston
     $ GDK_BACKEND=wayland
     $ export GDK_BACKEND
     $ side-cutters
+
+## Ubuntu
