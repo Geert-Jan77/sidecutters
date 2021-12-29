@@ -33,7 +33,7 @@ To get the real GNU C/C++ package (and its libraries) installed into the /usr/lo
         % brew update
         % brew upgrade
         
-2. Require the required right compiler version
+2. Require the right compiler version
         
         % brew install gcc@11
         
