@@ -13,9 +13,9 @@
 
 |Date               | Tag          | Functionality                                                                                                   |
 |-----------------  |--------------|---------------------------------------------------------------------------------------------------------------  |
-| 7 Februari 2022   | Milestone-7  | Add *letter* paper size                                                                                         |
-| 14 Februari 2022  | Milestone-8  | Add windows start menu folder                                                                                   |
-| 21 Februari 2022  | Milestone-9  | Install app to appfolder                                                                                        |
+| 7 Februari 2022   | Milestone-7  | Add *letter* paper size, add linetype selection, add color selector                                             |
+| 14 Februari 2022  | Milestone-8  | Add windows start menu folder, install app to appfolder                                                         |
+| 21 Februari 2022  | Milestone-9  | Object mode - object selection and edit                                                                         |
 | 7 March 2022      | v1.1         | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
 | 14 March 2022     | Milestone-10 | Show the Graphical user interface scaled on all known monitor sizes, menu and tooltips use the same font        |
 | 21 March 2022     | v1.2         | Draw all objects on Pdf surface                                                                                 |
