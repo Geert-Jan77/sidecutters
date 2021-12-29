@@ -7,7 +7,7 @@
 | 12 December 2021 	|              | Documentation: How to Compile                                                                                   |
 | 16 December 2021 	| Milestone-4  | Functional on MacOS and windows: Pdf export * buttons * tooltips * local folders * program icon	* open github website with default browser |
 | 23 December 2021  | Milestone-5  | The windows Taskbar is excluded from Side Cutters window                                                        |
-| 27 December 2021  | Milestone-6  | Display calibration is available for all known monitor sizes *doc/Display.md*                                   |
+| 29 December 2021  | Milestone-6  | Display calibration is available for all known monitor sizes *doc/Display.md*, line is drawn on display         |
 
 # Roadmap
 
