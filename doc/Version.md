@@ -8,11 +8,12 @@ A version is defined as
 
 where a is the OS supported 
 1. {MS windows x64, MacOS} 
-2. {MS windows x64, MacOS, Linux} 
-3. {MS windows x64, MacOS, Linux, FreeBSD}
-4. {MS windows x64, MacOS, Linux, FreeBSD, OpenBSD}
-5. {MS windows x64, MacOS, Linux, FreeBSD, OpenBSD, NetBSD}
-6. {MS windows x64, MacOS, Linux, FreeBSD, OpenBSD, NetBSD, Solaris}
+2. {MS windows x64, MacOS, Ubuntu} 
+3. {MS windows x64, MacOS, Ubuntu, Fedora} 
+4. {MS windows x64, MacOS, Ubuntu, Fedora, FreeBSD}
+5. {MS windows x64, MacOS, Ubuntu, Fedora, FreeBSD, OpenBSD}
+6. {MS windows x64, MacOS, Ubuntu, Fedora, FreeBSD, OpenBSD, NetBSD}
+7. {MS windows x64, MacOS, Ubuntu, Fedora, FreeBSD, OpenBSD, NetBSD, Solaris}
 
 where `b` is the functionality that is tested **OKAY** on all operating systems defined in `a`
 1. Draw all defined objects on display *doc/Drawobjects.md*         
