@@ -13,7 +13,7 @@
 
 |Date               | Tag          | Functionality                                                                                                   |
 |-----------------  |--------------|---------------------------------------------------------------------------------------------------------------  |
-| 7 Februari 2022   | Milestone-7  | Object mode - object selection and edit, rotate object                                                          |
+| 7 Februari 2022   | Milestone-7  | Object mode - object selection and edit                                                                         |
 | 7 Februari 2022   | Milestone-8  | Add perpendicular line, parallel line. Add connection symbols.                                                  |
 | 14 Februari 2022  | Milestone-9  | Find a place to display the real monitor size                                                                   |
 | 14 Februari 2022  | Milestone-10 | Add *letter* paper size, add linetype selection, add color selector                                             |
