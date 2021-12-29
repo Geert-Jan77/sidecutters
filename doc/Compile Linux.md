@@ -1,3 +1,4 @@
+( This doc is a work in progress )<br>
 # Compile Side Cutters
 How to compile on Fedora or Ubuntu linux
 
