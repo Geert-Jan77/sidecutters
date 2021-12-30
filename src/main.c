@@ -292,6 +292,42 @@ static void bText_clicked(GtkWidget *button, struct Icons *icons)
 		gtk_button_set_image(GTK_BUTTON(button), icons -> text0 );
 }
 
+static void bUndo_clicked(GtkWidget *button, struct Icons *icons)
+{
+	if (Undo[0] < 1)
+	{
+		GtkWidget *dialog ;
+		dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "There is nothing to undo." );
+		gtk_window_set_title(GTK_WINDOW(dialog), "Undo");
+		gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy( GTK_WIDGET(dialog) );
+	}
+	else
+	{
+	Pages[0] = Pages[0] - Undo[Undo[0]];
+	Undo[0]--;
+	Redo++;
+	}
+}
+
+static void bRedo_clicked(GtkWidget *button, struct Icons *icons)
+{
+	if (Redo < 1) 
+	{
+		GtkWidget *dialog ;
+		dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "There is nothing to redo." );
+		gtk_window_set_title(GTK_WINDOW(dialog), "Redo");
+		gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy( GTK_WIDGET(dialog) );
+	}
+	else
+	{
+	Pages[0] = Pages[0] + Undo[Undo[0] + 1];
+	Undo[0]++;
+	Redo--;
+	}
+}
+
 int main(int argc, char *argv[] )
 {
 	// main window
@@ -916,10 +952,12 @@ int main(int argc, char *argv[] )
 	gchar *lUndo = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Undo</span>";
 	gtk_widget_set_tooltip_markup(bUndo, lUndo);
 	gtk_widget_show(bUndo );
+	g_signal_connect(bUndo, "clicked", G_CALLBACK(bUndo_clicked ), &icons );
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bRedo, FALSE, FALSE, 0);
 	gchar *lRedo = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Redo</span>";
 	gtk_widget_set_tooltip_markup(bRedo, lRedo);
 	gtk_widget_show(bRedo );
+	g_signal_connect(bRedo, "clicked", G_CALLBACK(bRedo_clicked ), &icons );
 	gtk_box_pack_start (GTK_BOX(buttonbox2), bDoublethick, FALSE, FALSE, 0);
 	gchar *lDoublethick = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Double thickness 0.4 mm</span>";
 	gtk_widget_set_tooltip_markup(bDoublethick, lDoublethick);

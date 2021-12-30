@@ -49,8 +49,9 @@ guint8 dxfcolor[1024] = {0,0,0,0,1,255,0,0,2,255,255,0,3,0,255,0,4,0,255,255,5,0
 	230,255,0,127,231,255,127,191,232,204,0,102,233,204,102,153,234,152,0,76,235,152,76,114,236,127,0,63,237,127,63,95,238,76,0,38,239,76,38,57,
 	240,255,0,63,241,255,127,159,242,204,0,51,243,204,102,127,244,152,0,38,245,152,76,95,246,127,0,31,247,127,63,79,248,76,0,19,249,76,38,47,
 	250,51,51,51,251,91,91,91,252,132,132,132,253,173,173,173,254,214,214,214,255,255,255,255};
-guint Pages[1024];
-guint Undo[255];
+guint Pages[1024]; // Pages[0] is the length in guint32
+guint Undo[255];   // Undo[0]  is the length in quint32, number of objects  
+guint Redo = 0;
 
 static void tran_setup(GtkWidget *win)
 {        
@@ -101,6 +102,9 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
 			Pages[Pages[0] + 4] = (guint)iDrawx1;
 			Pages[Pages[0] + 5] = (guint)iDrawy1;
 			Pages[0] = Pages[0] + 5;
+			Undo[0]++;
+			Undo[Undo[0]] = 5;
+			Redo = 0;
 		}
 		gtk_widget_queue_draw(widget);
     }
