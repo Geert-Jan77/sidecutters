@@ -22,6 +22,13 @@ GtkWidget *bBreak;
 GtkWidget *bShorten;
 GtkWidget *bExportpdf;
 GtkWidget *bImportdxf;
+GtkWidget *bUndo;
+GtkWidget *bRedo; 
+GtkWidget *bDoublethick;
+GtkWidget *bTriplethick;
+GtkWidget *bDashedline;
+GtkWidget *bCenterline;
+GtkWidget *bColor;
 
 struct Icons
 {
@@ -73,6 +80,20 @@ struct Icons
 	GtkWidget *exportpdf0;
 	GtkWidget *importdxf;
 	GtkWidget *importdxf0;
+	GtkWidget *undo;
+	GtkWidget *undo0;
+	GtkWidget *redo;
+	GtkWidget *redo0;
+	GtkWidget *doublethick;
+	GtkWidget *doublethick0;
+	GtkWidget *triplethick;
+	GtkWidget *triplethick0;
+	GtkWidget *dashedline;
+	GtkWidget *dashedline0;
+	GtkWidget *centerline;
+	GtkWidget *centerline0;
+	GtkWidget *color;
+	GtkWidget *color0;
 };
 
 struct Icons icons;
