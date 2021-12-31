@@ -328,6 +328,20 @@ static void bRedo_clicked(GtkWidget *button, struct Icons *icons)
 	}
 }
 
+static void bColor_clicked(GtkWidget *button, struct Icons *icons)
+{
+	GtkWidget *dialog, *label, *content_area;
+	GtkDialogFlags flags;
+	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+	dialog = gtk_dialog_new_with_buttons ("Colorpicker", GTK_WINDOW (window), flags, "_OK", GTK_RESPONSE_NONE, NULL);
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	label = gtk_label_new ("Autodesk color index");
+	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+	gtk_container_add (GTK_CONTAINER (content_area), label);
+	gtk_container_add (GTK_CONTAINER (content_area), icons->aci);
+	gtk_widget_show_all (dialog);
+}	
+
 int main(int argc, char *argv[] )
 {
 	// main window
@@ -458,6 +472,7 @@ int main(int argc, char *argv[] )
     char *sCenterlinefile0 = malloc(strlen(sRes) + strlen("centerline0.xpm") + 1);
     char *sColorfile = malloc(strlen(sRes) + strlen("color.xpm") + 1);
     char *sColorfile0 = malloc(strlen(sRes) + strlen("color0.xpm") + 1);
+	char *sAcifile = malloc(strlen(sRes) + strlen("aci.xpm") + 1);
     strcpy(sLinefile, sRes);
     strcat(sLinefile, "line.xpm");
 	strcpy(sLinefile0, sRes);
@@ -582,6 +597,8 @@ int main(int argc, char *argv[] )
 	strcat(sColorfile, "color.xpm");
 	strcpy(sColorfile0, sRes);
 	strcat(sColorfile0, "color0.xpm");
+	strcpy(sAcifile, sRes);
+	strcat(sAcifile, "aci.xpm");
 	icons.line = gtk_image_new_from_file(sLinefile );
 	icons.line0 = gtk_image_new_from_file(sLinefile0 );
 	icons.polyline = gtk_image_new_from_file(sPolylinefile );
@@ -644,6 +661,7 @@ int main(int argc, char *argv[] )
 	icons.centerline0 = gtk_image_new_from_file(sCenterlinefile0 );
 	icons.color = gtk_image_new_from_file(sColorfile );
 	icons.color0 = gtk_image_new_from_file(sColorfile0 );
+	icons.aci = gtk_image_new_from_file(sAcifile );
 	g_object_ref_sink(icons.line );
 	g_object_ref_sink(icons.line0 );
 	g_object_ref_sink(icons.polyline );
@@ -706,6 +724,7 @@ int main(int argc, char *argv[] )
 	g_object_ref_sink(icons.centerline0 );
 	g_object_ref_sink(icons.color );
 	g_object_ref_sink(icons.color0 );
+	g_object_ref_sink(icons.aci );
 	GtkWidget *iLine = icons.line;
 	GtkWidget *iLine0 = icons.line0;
 	GtkWidget *iPolyline = icons.polyline;
@@ -768,6 +787,7 @@ int main(int argc, char *argv[] )
 	GtkWidget *iCenterline0 = icons.centerline0;
 	GtkWidget *iColor = icons.color;
 	GtkWidget *iColor0 = icons.color0;
+	GtkWidget *iAci = icons.aci;
 	bLine = GTK_WIDGET(gtk_button_new());
 	bPolyline = GTK_WIDGET(gtk_button_new());
 	bPolygon = GTK_WIDGET(gtk_button_new());
@@ -978,6 +998,7 @@ int main(int argc, char *argv[] )
 	gchar *lColor = "<span font='10' background='#00000002' foreground='#AFAFFFFF'>Color</span>";
 	gtk_widget_set_tooltip_markup(bColor, lColor);
 	gtk_widget_show(bColor );
+	g_signal_connect(bColor, "clicked", G_CALLBACK(bColor_clicked ), &icons );
     g_signal_connect(bImportdxf, "query-tooltip", G_CALLBACK(query_tooltip ), NULL);
 	g_signal_connect(bImportdxf, "clicked", G_CALLBACK(bImportdxf_clicked ), &icons );
 	g_signal_connect(window, "delete-event", G_CALLBACK(gtk_main_quit ), NULL );

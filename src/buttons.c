@@ -94,6 +94,7 @@ struct Icons
 	GtkWidget *centerline0;
 	GtkWidget *color;
 	GtkWidget *color0;
+	GtkWidget *aci;
 };
 
 struct Icons icons;
