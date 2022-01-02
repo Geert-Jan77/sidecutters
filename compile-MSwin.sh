@@ -27,6 +27,10 @@ fi
 done
 trash="${trash//\\//}"
 echo "Trash ${trash}"
+startm=$(reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" | grep 'Common Programs' | awk '{print $4 " " $5}')
+startm="${startm//\\//}"
+startm="${startm/C/c}"  
+echo "Startmenu ${startm}"
 filename="config"
 cp "src/config" ${filename}
 sed -i "s|trashfolder|${trash}|" ${filename}
