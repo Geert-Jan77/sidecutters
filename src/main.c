@@ -9,11 +9,11 @@
 #define MAX_LEN 256
 
 gboolean bCairoinitialized = FALSE;
+gboolean bColorpickerinitialized = FALSE;
 gboolean bCairoshown = FALSE;
-GtkWidget *window;
-GtkWidget *frame;
+GtkWidget *window, *frame, *acibox, *icCol, *icCol0, *buttonbox2;
 gint iLeft, iTop;
-
+gint iColorpickerLeft, iColorpickerTop;
 
 gint calibratescreen(float *ppmm, float *fSize)
 {
@@ -45,6 +45,17 @@ void getsize(GtkWidget *widget, GtkAllocation *allocation, char *data )
 		bCairoinitialized = TRUE;
 		iWindowx = allocation->x + allocation->width;
 		iWindowy = allocation->y;
+	}
+}
+
+void getsizecolorpicker(GtkWidget *widget, GtkAllocation *allocation, char *data ) 
+{
+	if (!bColorpickerinitialized)
+	{
+		g_print("Relative to client %s x %d y %d width %d height %d \n", data, allocation->x, allocation->y, allocation->width, allocation->height);
+		iColorpickerLeft = allocation->x;
+		iColorpickerTop = allocation->y;
+		bColorpickerinitialized = TRUE;
 	}
 }
 
@@ -328,18 +339,94 @@ static void bRedo_clicked(GtkWidget *button, struct Icons *icons)
 	}
 }
 
+static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gpointer user_data) 
+{
+	// to put the greys in the right order 
+	// grey 255,255,255,173, 91, 51,132,214,255,255 should be grey 0, 51, 91,128,132,173,192,214,255,0
+	// rows 259,257,255,253,251,250,252,254,256,258 should be aci  0,250,251,  8,252,253,  9,254,255,0
+	gint row[10] = {9,7,5,3,1,0,2,4,6,8};
+	gint col[26] = {0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250};
+	gint xn = (gint) event->x;
+	gint yn = (gint) event->y;   
+	gint xabs = xn - iColorpickerLeft;
+	gint yabs = yn - iColorpickerTop;
+	gint iRow = (yn - iColorpickerTop) / 20;
+	gint iCol = (xn - iColorpickerLeft) / 20;
+	iAci = col[iCol] + row[iRow];
+	if (iAci > 255) iAci = 255;
+    if (event->type == GDK_BUTTON_PRESS) 
+	{
+		g_print("Select color(%.0f mm,%.0f mm)\n", (float)xabs, (float)yabs );
+		g_print("Select aci %d\n",iAci);
+		GdkPixbuf* pix0 = gtk_image_get_pixbuf(GTK_IMAGE(icons.color0));
+		guchar *pixels0 = gdk_pixbuf_get_pixels (pix0);
+		int rowstride = gdk_pixbuf_get_rowstride (pix0);
+		for (int j = 6; j < 34; j++)
+		{
+			for (int i = 6; i < 34; i++)
+			{
+				guchar *p = pixels0 + i * rowstride + j * 3;
+				p[0] = (guchar)dxfcolor[4 * iAci + 1];
+				p[1] = (guchar)dxfcolor[4 * iAci + 2];
+				p[2] = (guchar)dxfcolor[4 * iAci + 3];
+			}
+		}
+		icCol0 = gtk_image_new_from_pixbuf ( pix0);		
+		gtk_button_set_image (GTK_BUTTON(bColor), icCol0 );
+		gtk_widget_show_all (window);
+		GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons.color));
+		guchar *pixels = gdk_pixbuf_get_pixels (pix);
+		rowstride = gdk_pixbuf_get_rowstride (pix);
+		for (int j = 6; j < 34; j++)
+		{
+			for (int i = 6; i < 34; i++)
+			{
+				guchar *p = pixels + i * rowstride + j * 3;
+				p[0] = (guchar)dxfcolor[4 * iAci + 1];
+				p[1] = (guchar)dxfcolor[4 * iAci + 2];
+				p[2] = (guchar)dxfcolor[4 * iAci + 3];
+			}
+		}
+		gtk_widget_destroy (GTK_WIDGET(icCol));		
+		icCol = gtk_image_new_from_pixbuf ( pix);
+		gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
+		gtk_widget_show_all (widget);
+	}
+	return TRUE;
+}
+
 static void bColor_clicked(GtkWidget *button, struct Icons *icons)
 {
-	GtkWidget *dialog, *label, *content_area;
+	GtkWidget *label, *content_area, *acicolor, *cDialog;
 	GtkDialogFlags flags;
+	acibox = gtk_box_new (TRUE, 0);
 	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
-	dialog = gtk_dialog_new_with_buttons ("Colorpicker", GTK_WINDOW (window), flags, "_OK", GTK_RESPONSE_NONE, NULL);
-	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	cDialog = gtk_dialog_new_with_buttons ("Colorpicker", GTK_WINDOW (window), flags, "_OK", GTK_RESPONSE_NONE, NULL);
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (cDialog));
 	label = gtk_label_new ("Autodesk color index");
-	g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+	g_signal_connect_swapped (cDialog, "response", G_CALLBACK (gtk_widget_destroy), cDialog);
 	gtk_container_add (GTK_CONTAINER (content_area), label);
-	gtk_container_add (GTK_CONTAINER (content_area), icons->aci);
-	gtk_widget_show_all (dialog);
+	acicolor = GTK_WIDGET(icons->aci);
+	gtk_container_add (GTK_CONTAINER (content_area), acibox);
+	gtk_box_pack_start (GTK_BOX (acibox), acicolor, FALSE, FALSE, 0);
+	GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons->color));
+	guchar *pixels = gdk_pixbuf_get_pixels (pix);
+	int rowstride = gdk_pixbuf_get_rowstride (pix);
+	for (int j = 6; j < 34; j++)
+	{
+		for (int i = 6; i < 34; i++)
+		{
+			guchar *p = pixels + i * rowstride + j * 3;
+			p[0] = (guchar)dxfcolor[4 * iAci + 1];
+			p[1] = (guchar)dxfcolor[4 * iAci + 2];
+			p[2] = (guchar)dxfcolor[4 * iAci + 3];
+		}
+	}	
+	icCol = gtk_image_new_from_pixbuf ( pix);
+	gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(cDialog), "button-press-event", G_CALLBACK (colorpicker_pressed), NULL);
+	g_signal_connect(acibox, "size-allocate", G_CALLBACK(getsizecolorpicker), "acibox");
+	gtk_widget_show_all (cDialog);
 }	
 
 int main(int argc, char *argv[] )
@@ -785,8 +872,9 @@ int main(int argc, char *argv[] )
 	GtkWidget *iDashedline0 = icons.dashedline0;
 	GtkWidget *iCenterline = icons.centerline;
 	GtkWidget *iCenterline0 = icons.centerline0;
-	GtkWidget *iColor = icons.color;
-	GtkWidget *iColor0 = icons.color0;
+	//GtkWidget *iColor = icons.color;
+	//GtkWidget *iColor0 = icons.color0;
+	icCol0 = icons.color0;
 	GtkWidget *iAci = icons.aci;
 	bLine = GTK_WIDGET(gtk_button_new());
 	bPolyline = GTK_WIDGET(gtk_button_new());
@@ -849,14 +937,14 @@ int main(int argc, char *argv[] )
 	gtk_button_set_image (GTK_BUTTON(bTriplethick), iTriplethick0 );
 	gtk_button_set_image (GTK_BUTTON(bDashedline), iDashedline0 );
 	gtk_button_set_image (GTK_BUTTON(bCenterline), iCenterline0 );
-	gtk_button_set_image (GTK_BUTTON(bColor), iColor0 );
+	gtk_button_set_image (GTK_BUTTON(bColor), icCol0 );
 	GtkWidget *vbox;
     vbox = gtk_box_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX(center_vbox), vbox, FALSE, FALSE, 0);
 	GtkWidget *buttonbox;
     buttonbox = gtk_box_new (TRUE, 0);
 	gtk_box_pack_start (GTK_BOX(vbox), buttonbox, FALSE, FALSE, 0);
-	GtkWidget *buttonbox2;
+	//GtkWidget *buttonbox2;
 	buttonbox2 = gtk_box_new(TRUE, 0); 
 	g_signal_connect(buttonbox, "size-allocate", G_CALLBACK(getsize), "buttonbox");
 	//gtk_container_add(GTK_CONTAINER(vbox), buttonbox2 );
