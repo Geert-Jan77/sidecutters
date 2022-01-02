@@ -341,9 +341,6 @@ static void bRedo_clicked(GtkWidget *button, struct Icons *icons)
 
 static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gpointer user_data) 
 {
-	// to put the greys in the right order 
-	// grey 255,255,255,173, 91, 51,132,214,255,255 should be grey 0, 51, 91,128,132,173,192,214,255,0
-	// rows 259,257,255,253,251,250,252,254,256,258 should be aci  0,250,251,  8,252,253,  9,254,255,0
 	gint row[10] = {9,7,5,3,1,0,2,4,6,8};
 	gint col[26] = {0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250};
 	gint xn = (gint) event->x;
@@ -353,7 +350,18 @@ static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gp
 	gint iRow = (yn - iColorpickerTop) / 20;
 	gint iCol = (xn - iColorpickerLeft) / 20;
 	iAci = col[iCol] + row[iRow];
-	if (iAci > 255) iAci = 255;
+	// put the greys in the right order
+	if (iAci == 259) iAci = 0;	
+	if (iAci == 8) iAci = 7;
+	if (iAci == 9) iAci = 7;
+	if (iAci == 253) iAci = 8;
+	if (iAci == 252) iAci = 9;
+	if (iAci == 250) iAci = 253;
+	if (iAci == 251) iAci = 252;
+	if (iAci == 257) iAci = 250;
+	if (iAci == 255) iAci = 251;
+	if (iAci == 256) iAci = 255;
+	if (iAci == 258) iAci = 0;
     if (event->type == GDK_BUTTON_PRESS) 
 	{
 		g_print("Select color(%.0f mm,%.0f mm)\n", (float)xabs, (float)yabs );
