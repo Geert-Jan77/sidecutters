@@ -11,8 +11,9 @@
 gboolean bCairoinitialized = FALSE;
 gboolean bColorpickerinitialized = FALSE;
 gboolean bCairoshown = FALSE;
-GtkWidget *window, *frame, *acibox, *icCol, *icCol0, *buttonbox2;
+GtkWidget *frame, *acibox, *icCol, *buttonbox2, *window, *icCol0;
 gint iLeft, iTop;
+guint iAciold;
 gint iColorpickerLeft, iColorpickerTop;
 
 gint calibratescreen(float *ppmm, float *fSize)
@@ -118,6 +119,54 @@ static char *sFromConf(char *KeytoFind )
 void show_message_cb (GtkMenuItem *item, gpointer user_data) 
 {
     g_print ("Debug Message\n");
+	// Read Config file to debug window
+	
+    char c;
+    FILE *fp2;
+	char buffer[MAX_LEN];
+    size_t len = 0;
+    ssize_t read;
+    fp2 = fopen("config", "r");
+    if (fp2 == NULL)
+    {
+        g_print("Error file not found.\n");
+    }
+    g_print("Key, Value\n");
+	while (fgets(buffer, MAX_LEN, fp2))
+    {
+		read = strcspn(buffer, "\n");
+        buffer[read+1] = 0;
+		char *line = buffer;
+		char *word = " = ";
+        char *pch = strstr(line, word);
+        if(pch)
+        {
+            size_t leng = pch - line;
+            char *key = malloc(leng + 1);
+            if (key)
+            {
+                for(int i = 0; i < pch - line; i++)
+                {
+                    key[i] = *(line + i);
+                }
+                key[leng] = '\0';
+                g_print("%s, ", key);
+                size_t leng2 = read + (size_t)(line - pch) - 3;
+                char *value = malloc(leng2 + 1);
+                if(value)
+                {
+                    int iStart = pch - line + 3;
+                    for(int i = iStart; i < iStart + leng2; i++)
+                    {
+                        value[i - iStart] = *(line + i);
+                    }
+                    value[leng2] = '\0';
+                    g_print("%s", value);
+                    g_print("\n");
+                }
+            }
+        }
+    }
 }
 
 void show_uri_cb (GtkMenuItem *item, gpointer user_data) 
@@ -188,7 +237,6 @@ static void bLine_clicked(GtkWidget *button, struct Icons *icons )
 
 static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 {
-	// Read Config file to debug window
 	static gboolean bPolyline = FALSE;
 	bPolyline = !bPolyline;
 	if (bPolyline)
@@ -196,52 +244,6 @@ static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 	else
 		gtk_button_set_image(GTK_BUTTON(button), icons -> polyline0 );
 	
-    char c;
-    FILE *fp2;
-	char buffer[MAX_LEN];
-    size_t len = 0;
-    ssize_t read;
-    fp2 = fopen("config", "r");
-    if (fp2 == NULL)
-    {
-        g_print("Error file not found.\n");
-    }
-    g_print("Key, Value\n");
-	while (fgets(buffer, MAX_LEN, fp2))
-    {
-		read = strcspn(buffer, "\n");
-        buffer[read+1] = 0;
-		char *line = buffer;
-		char *word = " = ";
-        char *pch = strstr(line, word);
-        if(pch)
-        {
-            size_t leng = pch - line;
-            char *key = malloc(leng + 1);
-            if (key)
-            {
-                for(int i = 0; i < pch - line; i++)
-                {
-                    key[i] = *(line + i);
-                }
-                key[leng] = '\0';
-                g_print("%s, ", key);
-                size_t leng2 = read + (size_t)(line - pch) - 3;
-                char *value = malloc(leng2 + 1);
-                if(value)
-                {
-                    int iStart = pch - line + 3;
-                    for(int i = iStart; i < iStart + leng2; i++)
-                    {
-                        value[i - iStart] = *(line + i);
-                    }
-                    value[leng2] = '\0';
-                    g_print("%s", value);
-                    g_print("\n");
-                }
-            }
-        }
-    }
 }
 
 static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
@@ -303,6 +305,26 @@ static void bText_clicked(GtkWidget *button, struct Icons *icons)
 		gtk_button_set_image(GTK_BUTTON(button), icons -> text0 );
 }
 
+void boRedrawBtn(guint iDoneAci)
+{
+	GdkPixbuf* pix0 = gtk_image_get_pixbuf(GTK_IMAGE(icons.color0));
+	guchar *pixels = gdk_pixbuf_get_pixels (pix0);
+	int rowstride = gdk_pixbuf_get_rowstride (pix0);
+	for (int j = 6; j < 34; j++)
+	{
+		for (int i = 6; i < 34; i++)
+		{
+			guchar *p = pixels + i * rowstride + j * 3;
+			p[0] = (guchar)dxfcolor[4 * iDoneAci + 1];
+			p[1] = (guchar)dxfcolor[4 * iDoneAci + 2];
+			p[2] = (guchar)dxfcolor[4 * iDoneAci + 3];
+		}
+	}
+	icCol0 = gtk_image_new_from_pixbuf ( pix0);		
+	gtk_button_set_image (GTK_BUTTON(bColor), icCol0 );
+	gtk_widget_show_all (window);
+}
+
 static void bUndo_clicked(GtkWidget *button, struct Icons *icons)
 {
 	if (Undo[0] < 1)
@@ -316,6 +338,8 @@ static void bUndo_clicked(GtkWidget *button, struct Icons *icons)
 	else
 	{
 	Pages[0] = Pages[0] - Undo[Undo[0]];
+	if (Pages[Pages[0] + 1] == 5) {g_print("Undo Color select.\n"); boRedrawBtn(Pages[Pages[0] + 2]); }
+	if (Pages[Pages[0] + 1] == 6) {g_print("Undo Line.\n");}
 	Undo[0]--;
 	Redo++;
 	}
@@ -333,6 +357,8 @@ static void bRedo_clicked(GtkWidget *button, struct Icons *icons)
 	}
 	else
 	{
+	if (Pages[Pages[0] + 1] == 5) {g_print("Redo Color select.\n"); boRedrawBtn(Pages[Pages[0] + 3]); }
+	if (Pages[Pages[0] + 1] == 6) {g_print("Redo Line.\n");}
 	Pages[0] = Pages[0] + Undo[Undo[0] + 1];
 	Undo[0]++;
 	Redo--;
@@ -349,6 +375,7 @@ static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gp
 	gint yabs = yn - iColorpickerTop;
 	gint iRow = (yn - iColorpickerTop) / 20;
 	gint iCol = (xn - iColorpickerLeft) / 20;
+	iAciold = iAci;
 	iAci = col[iCol] + row[iRow];
 	// put the greys in the right order
 	if (iAci == 259) iAci = 0;	
@@ -364,9 +391,9 @@ static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gp
 	if (iAci == 258) iAci = 0;
     if (event->type == GDK_BUTTON_PRESS) 
 	{
-		g_print("Select color(%.0f mm,%.0f mm)\n", (float)xabs, (float)yabs );
+		//g_print("Select color(%.0f mm,%.0f mm)\n", (float)xabs, (float)yabs );
 		g_print("Select aci %d\n",iAci);
-		GdkPixbuf* pix0 = gtk_image_get_pixbuf(GTK_IMAGE(icons.color0));
+		GdkPixbuf* pix0 = gtk_image_get_pixbuf(GTK_IMAGE(icons.color));
 		guchar *pixels0 = gdk_pixbuf_get_pixels (pix0);
 		int rowstride = gdk_pixbuf_get_rowstride (pix0);
 		for (int j = 6; j < 34; j++)
@@ -382,7 +409,7 @@ static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gp
 		icCol0 = gtk_image_new_from_pixbuf ( pix0);		
 		gtk_button_set_image (GTK_BUTTON(bColor), icCol0 );
 		gtk_widget_show_all (window);
-		GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons.color));
+		GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons.color0));
 		guchar *pixels = gdk_pixbuf_get_pixels (pix);
 		rowstride = gdk_pixbuf_get_rowstride (pix);
 		for (int j = 6; j < 34; j++)
@@ -395,29 +422,37 @@ static gboolean colorpicker_pressed(GtkWidget *widget, GdkEventButton *event, gp
 				p[2] = (guchar)dxfcolor[4 * iAci + 3];
 			}
 		}
-		gtk_widget_destroy (GTK_WIDGET(icCol));		
-		icCol = gtk_image_new_from_pixbuf ( pix);
-		gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
-		gtk_widget_show_all (widget);
+		//gtk_widget_destroy (GTK_WIDGET(icCol));		
+		//icCol = gtk_image_new_from_pixbuf ( pix);
+		//gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
+		//gtk_widget_show_all (widget);
 	}
 	return TRUE;
 }
 
+static void changeicon(GtkDialog* self,  gint response_id,  gpointer user_data) 
+{
+	g_print("OK clicked.\n");
+	Selectcolor(iAciold, iAci);
+}
+
 static void bColor_clicked(GtkWidget *button, struct Icons *icons)
 {
+	gtk_button_set_image(GTK_BUTTON(button), icons -> color );
 	GtkWidget *label, *content_area, *acicolor, *cDialog;
 	GtkDialogFlags flags;
-	acibox = gtk_box_new (TRUE, 0);
+	acibox = gtk_box_new (FALSE, 0);
 	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
 	cDialog = gtk_dialog_new_with_buttons ("Colorpicker", GTK_WINDOW (window), flags, "_OK", GTK_RESPONSE_NONE, NULL);
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (cDialog));
 	label = gtk_label_new ("Autodesk color index");
+	g_signal_connect(cDialog, "response", G_CALLBACK (changeicon), NULL);
 	g_signal_connect_swapped (cDialog, "response", G_CALLBACK (gtk_widget_destroy), cDialog);
 	gtk_container_add (GTK_CONTAINER (content_area), label);
 	acicolor = GTK_WIDGET(icons->aci);
 	gtk_container_add (GTK_CONTAINER (content_area), acibox);
 	gtk_box_pack_start (GTK_BOX (acibox), acicolor, FALSE, FALSE, 0);
-	GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons->color));
+	GdkPixbuf* pix = gtk_image_get_pixbuf(GTK_IMAGE(icons->color0));
 	guchar *pixels = gdk_pixbuf_get_pixels (pix);
 	int rowstride = gdk_pixbuf_get_rowstride (pix);
 	for (int j = 6; j < 34; j++)
@@ -430,8 +465,8 @@ static void bColor_clicked(GtkWidget *button, struct Icons *icons)
 			p[2] = (guchar)dxfcolor[4 * iAci + 3];
 		}
 	}	
-	icCol = gtk_image_new_from_pixbuf ( pix);
-	gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
+	//icCol = gtk_image_new_from_pixbuf ( pix);
+	//gtk_box_pack_start (GTK_BOX (acibox), icCol, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(cDialog), "button-press-event", G_CALLBACK (colorpicker_pressed), NULL);
 	g_signal_connect(acibox, "size-allocate", G_CALLBACK(getsizecolorpicker), "acibox");
 	gtk_widget_show_all (cDialog);

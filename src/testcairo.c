@@ -23,7 +23,7 @@ gint iInputs = 0;
 gboolean bTransparency = FALSE;
 gboolean bMarker1 = FALSE;
 gboolean boLine = FALSE;
-gint iAci = 0;
+guint iAci = 0;
 guint8 dxfcolor[1024] = {0,0,0,0,1,255,0,0,2,255,255,0,3,0,255,0,4,0,255,255,5,0,0,255,6,255,0,255,7,255,255,255,8,128,128,128,9,192,192,192,
 	10,255,0,0,11,255,127,127,12,204,0,0,13,204,102,102,14,153,0,0,15,153,76,76,16,127,0,0,17,127,63,63,18,76,0,0,19,76,38,38,
 	20,255,63,0,21,255,159,127,22,204,51,0,23,204,127,102,24,153,38,0,25,153,95,76,26,127,31,0,27,127,79,63,28,76,19,0,29,76,47,38,
@@ -113,6 +113,18 @@ static gboolean mouse_moved(GtkWidget *widget, GdkEvent *event, gpointer user_da
     }
 	return FALSE;
 }
+
+void Selectcolor(guint iOld,guint iNew)
+{  
+	gtk_button_set_image(GTK_BUTTON(bColor), icons.color0 );
+	Pages[Pages[0] + 1] = 5;
+	Pages[Pages[0] + 2] = (guint)iOld;
+	Pages[Pages[0] + 3] = (guint)iNew;
+	Pages[0] = Pages[0] + 3;
+	Undo[0]++;
+	Undo[Undo[0]] = 3;
+	Redo = 0;
+}		
 
 static gboolean button_pressed(GtkWidget *widget, GdkEventButton *event, gpointer user_data) 
 {
@@ -216,7 +228,7 @@ static void do_drawing(cairo_t *Cairo)
 	}
 	cairo_stroke(Cairo);  
 	// dash lines
-	cairo_set_source_rgba(Cairo, 0, 0, 0, 1);
+	//cairo_set_source_rgba(Cairo, 0, 0, 0, 1);
 	double dCenterline[] = {3.0 * fPPMM, 1.0 * fPPMM , 1.0 * fPPMM, 1.0 * fPPMM};
 	int len1  = sizeof(dCenterline) / sizeof(dCenterline[0]);
 	double dDashline[] = {3.0 * fPPMM };
@@ -236,6 +248,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_line_to(Cairo, 200 * fPPMM, 70 * fPPMM);
 	cairo_stroke(Cairo);  
 	// finished drawing objects
+	gboolean boRedrawBtn = FALSE;
 	int iCounter = 1;
 	while (iCounter <= Pages[0])
 	{
@@ -246,10 +259,16 @@ static void do_drawing(cairo_t *Cairo)
 			iDonex1 = (gint)Pages[iCounter + 3];
 			iDoney1 = (gint)Pages[iCounter + 4];
 			iCounter = iCounter + 5;
+			cairo_move_to(Cairo, (20.0 + (float)iDonex0) * fPPMM, (215.0 - (float)iDoney0) * fPPMM );
+			cairo_line_to(Cairo, (20.0 + (float)iDonex1) * fPPMM, (215.0 - (float)iDoney1) * fPPMM );
+			cairo_stroke(Cairo);
 		}
-		cairo_move_to(Cairo, (20.0 + (float)iDonex0) * fPPMM, (215.0 - (float)iDoney0) * fPPMM );
-		cairo_line_to(Cairo, (20.0 + (float)iDonex1) * fPPMM, (215.0 - (float)iDoney1) * fPPMM );
-		cairo_stroke(Cairo);
+		if (Pages[iCounter] == 5)
+		{
+			iDonex0 = (gint)Pages[iCounter + 2];
+			iCounter = iCounter + 3;
+			cairo_set_source_rgb(Cairo,(float)dxfcolor[4 * iDonex0 + 1], (float)dxfcolor[4 * iDonex0 + 2], (float)dxfcolor[4 * iDonex0 + 3]/255);
+		}
 	}
 	// current drawing object
 	if ((boLine) && (iInputs == 1)) 
