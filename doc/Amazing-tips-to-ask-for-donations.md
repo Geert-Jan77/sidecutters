@@ -5,6 +5,8 @@ Computer Aided Design and Computer Aided Manufacturing CAD/ CAM Software for wir
 2. The wiring diagram has pages and columns. A wire should continue from one page to another.
 3. It should take no longer than a few minutes to draw a complete system.
 
+# Amazing tips to ask for donations
+
 When asking for donations, you must consider the amazing tips:
  - Giving is better than taking
  - Nagscreens and loss of functionality should be avoided at all costs
