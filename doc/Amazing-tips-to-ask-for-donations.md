@@ -1,6 +1,6 @@
 # The choice to make this software free
 
-Computer Aided Design and Computer Aided Manufacturing CAD/ CAM Software for wiring diagams that is created to compete for profit is of no use at all. It targets people that don't work with it, lacks vision and quality and can't be adapted. These programs are expensive and functionally poor, and that's why they are financially out of reach for middle large businesses. Good CAD/ CAM software is a tool to stimulate progression and prosperity in a broad sense: productivity of the people. We define our quality standard now in three points:
+Computer Aided Design and Computer Aided Manufacturing CAD/ CAM Software for wiring diagams that is created to compete for profit is of no use at all. It targets people that don't work with it, lacks vision and quality and can't be adapted. These programs are poor and expensive, and that's why they are financially out of reach for middle large businesses. Good CAD/ CAM software is a tool to stimulate progression and prosperity in a broad sense: productivity of the people. We define our quality standard now in three points:
 1. The choice of the Side Cutter icon is not a coincidence, a wiring diagram should include the length of all wires because someone in your organisation has to cut them.
 2. The wiring diagram has pages and columns. A wire should continue from one page to another.
 3. It should take no longer than a few minutes to draw a complete system.
