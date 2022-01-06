@@ -35,10 +35,10 @@ A Portable data file is printed with horizontal and vertical resolution of `600 
 
 The A0 size is defined as follows:
 The paper has an area of one square meter. The aspect ratio is the square root of two.
-The exact `A0_width = 2<sup>1/4</sup>` m and the exact `A0_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 2 m`
+The exact A0_width = 2<sup>1/4</sup> m and the exact A0_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 2 m
 The A1 size is obtained by halving the longest side of an A0, and after halving the paper four times, the A4 size is obtained.
 
-The exact `A4_width = 2<sup>1/2</sup> / 4 m` and the exact `A4_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 8 m`
+The exact A4_width = 2<sup>1/2</sup> / 4 m and the exact A4_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 8 m
 This evaluates to *297.3 mm x 210.2 mm*
 
 ### Letter
@@ -47,5 +47,5 @@ The letter size is 11 x 8.5 inches. It is exactly *279.4 mm x  215.9 mm*
 
 # Precision
 
-The *10<sup>-6</sup>* precision of a float is used for every variable. All floats should be absolute minimum 1.0, so that the precision is at least `0.000001 / 1.000000 = 10<sup>-6</sup>`
-The worst-case scenario is a variable `(float)fWorst = 1.000000 +- 0.000001`
+The *10<sup>-6</sup>* precision of a float is used for every variable. All floats should be absolute minimum 1.0, so that the precision is at least 0.000001 / 1.000000 = 10<sup>-6</sup>
+The worst-case scenario is a variable (float)fWorst = 1.000000 +- 0.000001
