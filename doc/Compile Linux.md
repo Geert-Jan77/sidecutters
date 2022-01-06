@@ -16,3 +16,5 @@ This will run weston as an X client. clicking on the terminal icon in the weston
     $ side-cutters
 
 ## Ubuntu
+
+## Slackware
