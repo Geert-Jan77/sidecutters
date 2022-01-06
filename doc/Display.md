@@ -33,12 +33,11 @@ A Portable data file is printed with horizontal and vertical resolution of `600 
 
 ### A4 paper format
 
-The A0 size is defined as follows:
-The paper has an area of one square meter. The aspect ratio is the square root of two.
-The exact A0_width = 2<sup>1/4</sup> m and the exact A0_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 2 m
+The A0 size is defined as follows: The paper area is one square meter and the paper aspect ratio is &radic;2.
+The exact width of an A0 is 2<sup>1/4</sup> m and the exact height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 2 m
 The A1 size is obtained by halving the longest side of an A0, and after halving the paper four times, the A4 size is obtained.
 
-The exact A4_width = 2<sup>1/2</sup> / 4 m and the exact A4_height = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 8 m
+The exact width A4_w = 2<sup>1/2</sup> / 4 m and the exact height A4_h = 2<sup>1/2</sup> * 2<sup>1/4</sup> / 8 m
 This evaluates to *297.3 mm x 210.2 mm*
 
 ### Letter
