@@ -38,6 +38,11 @@ The paper has an area of one square meter. The aspect ratio is the square root o
 The exact `A0_width = 2^(1/4)` m and the exact `A0_height = 2^(1/2) * 2^(1/4) / 2 m`
 The A1 size is obtained by halving the longest side of an A0, and after halving the paper four times, the A4 size is obtained.
 
+<span style="white-space: nowrap; font-size:larger">
+&radic;<span style="text-decoration:overline;">&nbsp;X + 1&nbsp;</span>
+</span>
+<math>\alpha^2+\beta^2=1</math>
+
 The exact `A4_width = 2^(1/4) / 4 m` and the exact `A4_height = 2^(1/2) * 2^(1/4) / 8 m`
 This evaluates to *297.3 mm x 210.2 mm*
 
