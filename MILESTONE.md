@@ -16,7 +16,7 @@
 | 21 Januari 2022   | Milestone-7  | Undo/ Redo                                                                                                      |
 | 7 Februari 2022   | Milestone-8  | Object mode - object selection and edit                                                                         |
 | 7 Februari 2022   | Milestone-9  | Add perpendicular line, parallel line. Add connection symbols.                                                  |
-| 14 Februari 2022  | Milestone-10  | Find a place to display the real monitor size                                                                   |
+| 14 Februari 2022  | Milestone-10 | Find a place to display the real monitor size                                                                   |
 | 14 Februari 2022  | Milestone-11 | Add *letter* paper size, add linetype selection, add color selector                                             |
 | 21 Februari 2022  | Milestone-12 | Add windows start menu folder, install app to appfolder                                                         |
 | 7 March 2022      | v1.1         | Draw all defined objects on display *doc/Drawobjects.md*                                                        |
@@ -29,4 +29,6 @@
 | 21 May 2022       | Milestone-16 | Create *Side Cutters Project* - device connect table                                                            |
 | 4 Jun 2022        |              | Define a donation request *doc/Amazing-tips-to-ask-for-donations.md* without loss of functionality in the free software |
 | 5 Jun 2022        | v1.5         | Create *Side Cutters Project* - auto-generate electrical drawing by pressing the *Side Cutters* button          | 
+| 12 Jun 2022       | v1.6         | Display the app in a webbrowser. Android and iOS platforms can use Side Cutters online.                         |
+
 
