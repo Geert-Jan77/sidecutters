@@ -22,4 +22,5 @@ where `a` is the OS supported
 3. Import Dxf drawing
 4. Add drawing templates for all defined rail-mounted electric devices *doc/Drawdevices.md*              
 5. Create *Side Cutters Project* - auto-generate electrical drawing by pressing the *Side Cutters* button  
+6. Display the app in a webbrowser. Android and iOS platforms can use a server running Side Cutters online.
 
