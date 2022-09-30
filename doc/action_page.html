@@ -5,7 +5,12 @@ test v1.0<br>
 <h1>The script element</h1>
 <p id="demo"></p>
 <script>
-document.getElementById("demo").innerHTML = "Hello JavaScript!";
+const params = new Proxy(new URLSearchParams(window.location.search), {
+get: (searchParams, prop) => searchParams.get(prop),
+});
+// Get the value of "some_key" in eg "https://example.com/?some_key=some_value"
+let value = params.fname; // "some_value"
+document.getElementById("demo").innerHTML = value; //"Hello JavaScript!";
 </script> 
 </body>
 </body>
