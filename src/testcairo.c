@@ -247,7 +247,7 @@ static void do_drawing(cairo_t *Cairo)
 	cairo_move_to(Cairo, 40 * fPPMM, 70 * fPPMM);  
 	cairo_line_to(Cairo, 200 * fPPMM, 70 * fPPMM);
 	cairo_stroke(Cairo);  
-	// finished drawing objects
+	// finished drawing objects (20, 5)
 	gboolean boRedrawBtn = FALSE;
 	int iCounter = 1;
 	while (iCounter <= Pages[0])

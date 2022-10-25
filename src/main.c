@@ -249,6 +249,7 @@ static void bPolyline_clicked(GtkWidget *button, struct Icons *icons)
 static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 {
 	// export pdf with cairo
+	cairo_text_extents_t extents1, extents2, extents3;
 	static gboolean bExportpdf = FALSE;
 	bExportpdf = !bExportpdf;
 	if (bExportpdf)
@@ -263,20 +264,60 @@ static void bExportpdf_clicked(GtkWidget *button, struct Icons *icons)
 	char* arg[] = {sPdfFile, sPicturefile };
 	int iRet = 0;
 	cairo_surface_t *surface;
-	cairo_t *cr;
-	surface = cairo_pdf_surface_create(sPdfFile, 504, 648);
-	cr = cairo_create(surface);
-	cairo_set_source_rgb(cr, 0, 0, 0);
-	cairo_select_font_face (cr, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-	cairo_set_font_size (cr, 14.17f);
-	cairo_move_to(cr, 10.0, 50.0);
-	cairo_show_text(cr, "5 mm Calibri lettertype.");  
-	cairo_set_font_size (cr, 28.34f);
-	cairo_move_to(cr, 10.0, 50.0f + 14.17f + 28.34f);
-	cairo_show_text(cr, "10 mm Calibri lettertype.");  
-	cairo_show_page(cr);
+	cairo_t *Cairo;
+	surface = cairo_pdf_surface_create(sPdfFile, 297.0 * fPPMM, 210.0 * fPPMM);
+	Cairo = cairo_create(surface);
+	
+
+	// finished drawing objects (20, 5) -> (0, 0) 
+	cairo_set_line_width (Cairo, 0.2 * MMPT ); //0.2 mm linewidth
+	gboolean boRedrawBtn = FALSE;
+	int iCounter = 1;
+	while (iCounter <= Pages[0])
+	{
+		if (Pages[iCounter] == 6)
+		{
+			iDonex0 = (gint)Pages[iCounter + 1];
+			iDoney0 = (gint)Pages[iCounter + 2];
+			iDonex1 = (gint)Pages[iCounter + 3];
+			iDoney1 = (gint)Pages[iCounter + 4];
+			iCounter = iCounter + 5;
+			cairo_move_to(Cairo, ((float)iDonex0) * fPPMM, (210.0 - (float)iDoney0) * fPPMM );
+			cairo_line_to(Cairo, ((float)iDonex1) * fPPMM, (210.0 - (float)iDoney1) * fPPMM );
+			cairo_stroke(Cairo);
+		}
+		if (Pages[iCounter] == 5)
+		{
+			iDonex0 = (gint)Pages[iCounter + 2];
+			iCounter = iCounter + 3;
+			cairo_set_source_rgb(Cairo,(float)dxfcolor[4 * iDonex0 + 1], (float)dxfcolor[4 * iDonex0 + 2], (float)dxfcolor[4 * iDonex0 + 3]/255);
+		}
+	}
+	
+	// textbox
+	cairo_set_source_rgb(Cairo, 0, 0, 0);
+	cairo_select_font_face(Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size(Cairo, 3.0 * fPPMM / PXPT);
+	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3 mm.", &extents1);
+    if (!bMarker1) g_print("Target font height %f mm Realised fontheight %f mm\n", 3.0, extents1.height /fPPMM );
+    fScalefont = 3.0 * fPPMM / extents1.height;
+	if (!bMarker1) {g_print("Font Scaling %.2f \n", fScalefont); bMarker1=TRUE;}
+    cairo_set_font_size(Cairo, 3.0 * fPPMM / PXPT);
+	cairo_text_extents(Cairo, "A4 297 x 210 mm. Calibri 3 mm.", &extents1);
+	cairo_move_to(Cairo, (297.0 * fPPMM) - extents1.width - extents1.x_bearing, (210.0 * fPPMM) - extents1.height - extents1.y_bearing  );   
+	cairo_show_text(Cairo, "A4 297 x 210 mm. Calibri 3 mm.");
+	// textbox
+	cairo_set_source_rgb(Cairo, 0, 0, 0);
+	cairo_select_font_face (Cairo, "Calibri", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL); 
+    cairo_set_font_size (Cairo, 3.0 * fPPMM / PXPT);
+	cairo_text_extents(Cairo, label, &extents2);
+	cairo_move_to(Cairo, (297.0 * fPPMM) - extents2.width - extents2.x_bearing, (210.0 * fPPMM) - extents1.height - extents2.height - extents2.y_bearing  );   
+	cairo_show_text(Cairo, label);  
+	
+	
+	cairo_show_page(Cairo);
 	cairo_surface_destroy(surface);
-	cairo_destroy(cr);
+	cairo_destroy(Cairo);
 	GtkWidget *dialog ;
     if (iRet == 0) dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "The cairo portable data file was exported." );
     gtk_window_set_title(GTK_WINDOW(dialog), "TestPdf");
